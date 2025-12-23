@@ -299,3 +299,48 @@ export const getCustomerInvoice = async (
   return data;
 };
 
+// Create online booking
+export interface CreateOnlineBookingRequest {
+  user_id: string;
+  business_id: string;
+  timezone: string;
+  language: string;
+  timestamp: number;
+}
+
+export interface CreateOnlineBookingResponse {
+  status: boolean;
+  message: string;
+  payload?: {
+    booking_id?: string;
+    meet_link?: string;
+    [key: string]: unknown;
+  };
+}
+
+export const createOnlineBooking = async (
+  payload: CreateOnlineBookingRequest,
+  authToken: string
+): Promise<CreateOnlineBookingResponse> => {
+  const response = await apiRequest(
+    'customer/create-online-booking',
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    },
+    authToken
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to create online booking');
+  }
+
+  const data = await response.json();
+  if (!data.status) {
+    throw new Error(data.message || 'Failed to create online booking');
+  }
+
+  return data;
+};
+

@@ -764,7 +764,7 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
                                 <span className="text-red-500 font-medium text-sm sm:text-base">{service.currentPrice}</span>
                               </div>
                               <Link href={`/booking?business_id=${salon.id}&service_id=${service.id}`}>
-                                <button className="bg-blue-500 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-medium hover:bg-blue-600 transition-colors">
+                                <button className="bg-blue-500 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-medium hover:bg-blue-600 transition-colors cursor-pointer">
                                   Book Now
                                 </button>
                               </Link>
