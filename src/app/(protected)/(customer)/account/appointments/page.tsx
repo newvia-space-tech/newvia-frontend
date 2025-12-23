@@ -452,7 +452,7 @@ export default function AppointmentsPage() {
                             <div className="flex flex-col gap-2 w-full sm:w-auto">
                               <button 
                                 onClick={() => handleDownloadReceipt(appointment)}
-                                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
                               >
                                 <Download className="w-4 h-4" />
                                 <span
@@ -468,7 +468,7 @@ export default function AppointmentsPage() {
                               </button>
                               <button
                                 onClick={() => handleWriteReview(appointment)}
-                                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg hover:opacity-90 transition-colors"
+                                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg hover:opacity-90 transition-colors cursor-pointer"
                                 style={{ backgroundColor: '#FFDE82' }}
                               >
                                 <Star className="w-4 h-4 text-black" />
