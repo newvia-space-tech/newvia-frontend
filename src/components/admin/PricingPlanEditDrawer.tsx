@@ -4,12 +4,26 @@ import React, { useEffect, useState } from 'react';
 import { X, Settings } from 'lucide-react';
 import { SubscriptionPlan, NumericData } from '@/types';
 
+interface PricingPlanFormData {
+  monthly_price: number;
+  currency: string;
+  subtitle: string;
+  tag_line: string;
+  commission_new_customer: number;
+  commission_repeat_customer: number;
+  payment_processing_fee: number;
+  new_cust_comm_is_active: boolean;
+  repeat_cust_comm_is_active: boolean;
+  featuresActiveStatus?: { [key: number]: boolean };
+  featureTaglines?: { [key: number]: string };
+}
+
 interface PricingPlanEditDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   plan: SubscriptionPlan | null;
   numericData?: NumericData;
-  onSave?: (data: any) => void;
+  onSave?: (data: PricingPlanFormData) => void;
 }
 
 export default function PricingPlanEditDrawer({
