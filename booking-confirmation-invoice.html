@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<!--
+    BOOKING CONFIRMATION INVOICE TEMPLATE
+    
+    This template uses {{ }} placeholders that should be replaced by the backend.
+    All placeholders are listed below:
+    
+    HEADER SECTION:
+    - {{logoUrl}} - URL or base64 encoded image for company logo
+    - {{invoiceNumber}} - Invoice number (e.g., "INV-2025-00124")
+    - {{invoiceDate}} - Invoice date (e.g., "September 8, 2025")
+    - {{bookingId}} - Booking ID (e.g., "BK-98231")
+    
+    CUSTOMER DETAILS:
+    - {{customerName}} - Full name of the customer
+    - {{customerEmail}} - Customer email address
+    - {{customerPhone}} - Customer phone number with country code
+    
+    SERVICE PROVIDER DETAILS:
+    - {{providerName}} - Name of the service provider/business
+    - {{providerAddressLine1}} - First line of provider address
+    - {{providerAddressLine2}} - Second line of provider address (city, state, zip)
+    - {{providerEmail}} - Provider email address
+    - {{providerPhone}} - Provider phone number
+    
+    APPOINTMENT DETAILS:
+    - {{appointmentDate}} - Date of the appointment (e.g., "September 8, 2025")
+    - {{bookingStartTime}} - Start time of booking (e.g., "10:00 AM")
+    - {{serviceName}} - Name of the service (e.g., "Haircut for Men")
+    - {{serviceDuration}} - Duration of service (e.g., "90 minutes")
+    
+    PAYMENT SUMMARY:
+    - {{servicePrice}} - Service price with currency (e.g., "RM 120.00")
+    - {{discountAmount}} - Discount amount with currency (e.g., "-RM 35.00" or "RM 0.00")
+    - {{taxRate}} - Tax rate percentage (e.g., "0" or "6")
+    - {{taxAmount}} - Tax amount with currency (e.g., "RM 0.00")
+    - {{totalAmount}} - Total amount with currency (e.g., "RM 85.00")
+    
+    FOOTER:
+    - {{websiteUrl}} - Company website URL (e.g., "www.newvia.com")
+    - {{supportEmail}} - Support email address
+    - {{termsUrl}} - URL to terms and conditions page
+    
+    NOTE: If discount is not applicable, replace {{discountAmount}} with "RM 0.00" or remove the discount row entirely.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Invoice - {{invoiceNumber}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #0f172b;
+            line-height: 1.5;
+        }
+        
+        .invoice-container {
+            max-width: 766px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+        }
+        
+        /* Header Section */
+        .header {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .logo-section {
+            width: 108px;
+            height: 86px;
+        }
+        
+        .logo-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .invoice-header-info {
+            text-align: right;
+        }
+        
+        .invoice-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172b;
+            line-height: 32px;
+            letter-spacing: 0.0703px;
+            margin-bottom: 4px;
+        }
+        
+        .invoice-meta {
+            font-size: 14px;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+            margin-bottom: 4px;
+        }
+        
+        .invoice-meta-label {
+            color: #717182;
+            font-weight: 400;
+        }
+        
+        .invoice-meta-value {
+            color: #0f172b;
+            font-weight: 500;
+        }
+        
+        /* Content Section */
+        .content {
+            padding: 24px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 0 0 24px 0;
+        }
+        
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .detail-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .section-heading {
+            font-size: 14px;
+            font-weight: 600;
+            color: #717182;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+            text-transform: uppercase;
+        }
+        
+        .detail-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .detail-item {
+            font-size: 14px;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+            color: #0f172b;
+        }
+        
+        .detail-item-label {
+            font-weight: 500;
+        }
+        
+        .detail-item-value {
+            font-weight: 400;
+        }
+        
+        /* Appointment Details Table */
+        .appointment-section,
+        .payment-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #717182;
+            line-height: 20px;
+            letter-spacing: 0.5496px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        
+        .table-container {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-row {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-header-cell {
+            background-color: rgba(236, 236, 240, 0.5);
+            padding: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0a0a0a;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+        }
+        
+        .table-cell {
+            padding: 8px;
+            font-size: 14px;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+            color: #0f172b;
+        }
+        
+        .table-cell-label {
+            background-color: rgba(236, 236, 240, 0.5);
+            font-weight: 500;
+            width: 33.33%;
+        }
+        
+        .table-cell-value {
+            font-weight: 400;
+        }
+        
+        .table-cell-amount {
+            text-align: right;
+            font-weight: 400;
+        }
+        
+        .discount-text {
+            color: #00a63e;
+        }
+        
+        .total-row {
+            background-color: #f8fafc;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 28px;
+            letter-spacing: -0.4395px;
+            padding: 8px;
+        }
+        
+        .total-amount {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 28px;
+            letter-spacing: -0.4395px;
+            text-align: right;
+            padding: 8px;
+        }
+        
+        /* Footer Section */
+        .footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 24px 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: #717182;
+            line-height: 20px;
+            letter-spacing: -0.1504px;
+            text-decoration: none;
+        }
+        
+        .footer-disclaimer {
+            font-size: 12px;
+            font-style: italic;
+            color: #90a1b9;
+            line-height: 16px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .invoice-container {
+                padding: 16px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .invoice-header-info {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-section">
+                <img src="{{logoUrl}}" alt="Company Logo" />
+            </div>
+            <div class="invoice-header-info">
+                <h1 class="invoice-title">Service Invoice</h1>
+                <div class="invoice-meta">
+                    <span class="invoice-meta-label">Invoice #:</span>
+                    <span class="invoice-meta-value">{{invoiceNumber}}</span>
+                </div>
+                <div class="invoice-meta">
+                    <span class="invoice-meta-label">Date:</span>
+                    <span class="invoice-meta-value">{{invoiceDate}}</span>
+                </div>
+                <div class="invoice-meta">
+                    <span class="invoice-meta-label">Booking ID:</span>
+                    <span class="invoice-meta-value">{{bookingId}}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="content">
+            <div class="divider"></div>
+            
+            <!-- Customer and Provider Details -->
+            <div class="details-grid">
+                <!-- Customer Details -->
+                <div class="detail-section">
+                    <h3 class="section-heading">CUSTOMER DETAILS</h3>
+                    <div class="detail-content">
+                        <div class="detail-item detail-item-label">{{customerName}}</div>
+                        <div class="detail-item detail-item-value">{{customerEmail}}</div>
+                        <div class="detail-item detail-item-value">{{customerPhone}}</div>
+                    </div>
+                </div>
+                
+                <!-- Service Provider Details -->
+                <div class="detail-section">
+                    <h3 class="section-heading">SERVICE PROVIDER</h3>
+                    <div class="detail-content">
+                        <div class="detail-item detail-item-label">{{providerName}}</div>
+                        <div class="detail-item detail-item-value">{{providerAddressLine1}}</div>
+                        <div class="detail-item detail-item-value">{{providerAddressLine2}}</div>
+                        <div class="detail-item detail-item-value">{{providerEmail}} | {{providerPhone}}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Appointment Details -->
+            <div class="appointment-section">
+                <h3 class="section-title">Appointment Details</h3>
+                <div class="table-container">
+                    <table class="table">
+                        <tbody>
+                            <tr class="table-row">
+                                <td class="table-cell table-cell-label">Date</td>
+                                <td class="table-cell table-cell-value">{{appointmentDate}}</td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="table-cell table-cell-label">Booking Start Time</td>
+                                <td class="table-cell table-cell-value">{{bookingStartTime}}</td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="table-cell table-cell-label">Service</td>
+                                <td class="table-cell table-cell-value">{{serviceName}}</td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="table-cell table-cell-label">Duration</td>
+                                <td class="table-cell table-cell-value">{{serviceDuration}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Payment Summary -->
+            <div class="payment-section">
+                <h3 class="section-title">Payment Summary</h3>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-row">
+                                <th class="table-header-cell" style="text-align: left;">Description</th>
+                                <th class="table-header-cell" style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-row">
+                                <td class="table-cell">Service Price</td>
+                                <td class="table-cell table-cell-amount">{{servicePrice}}</td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="table-cell discount-text">Discount Applied</td>
+                                <td class="table-cell table-cell-amount discount-text">{{discountAmount}}</td>
+                            </tr>
+                            <tr class="table-row">
+                                <td class="table-cell">Taxes ({{taxRate}}%)</td>
+                                <td class="table-cell table-cell-amount">{{taxAmount}}</td>
+                            </tr>
+                            <tr class="table-row total-row">
+                                <td class="total-label">Total Amount</td>
+                                <td class="total-amount">{{totalAmount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Section -->
+        <div class="footer">
+            <div class="footer-links">
+                <a href="{{websiteUrl}}" class="footer-link">{{websiteUrl}}</a>
+                <a href="mailto:{{supportEmail}}" class="footer-link">{{supportEmail}}</a>
+                <a href="{{termsUrl}}" class="footer-link">Terms & Conditions</a>
+            </div>
+            <p class="footer-disclaimer">
+                "This is a computer-generated invoice and does not require a signature."
+            </p>
+        </div>
+    </div>
+</body>
+</html>
