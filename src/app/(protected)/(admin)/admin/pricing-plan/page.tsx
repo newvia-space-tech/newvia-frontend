@@ -33,7 +33,21 @@ export default function PricingPlanPage() {
     setSelectedNumericData(undefined);
   };
 
-  const handleSave = async (formData: any) => {
+  interface PricingPlanFormData {
+    monthly_price: number;
+    currency: string;
+    subtitle: string;
+    tag_line: string;
+    commission_new_customer: number;
+    commission_repeat_customer: number;
+    payment_processing_fee: number;
+    new_cust_comm_is_active: boolean;
+    repeat_cust_comm_is_active: boolean;
+    featuresActiveStatus?: { [key: number]: boolean };
+    featureTaglines?: { [key: number]: string };
+  }
+
+  const handleSave = async (formData: PricingPlanFormData) => {
     if (!selectedPlan) return;
 
     // Map form data to API request structure
@@ -271,7 +285,7 @@ export default function PricingPlanPage() {
                               lineHeight: '20px'
                             }}
                           >
-                            What's Included
+                            What&apos;s Included
                           </p>
                           <div className="flex flex-col gap-3">
                             {features.map((feature, index) => (

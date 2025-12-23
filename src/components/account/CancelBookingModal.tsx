@@ -82,7 +82,7 @@ export default function CancelBookingModal({
               lineHeight: '24px'
             }}
           >
-            If you cancel within 24 hours of booking, you'll receive a full refund. Cancellations made after 24 hours will not be eligible for a refund.
+            If you cancel within 24 hours of booking, you&apos;ll receive a full refund. Cancellations made after 24 hours will not be eligible for a refund.
           </p>
         </div>
 
