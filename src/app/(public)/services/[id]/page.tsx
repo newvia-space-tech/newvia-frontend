@@ -14,6 +14,7 @@ import { getBusinessDiscounts } from '@/services/discount/discount';
 import { toggleCustomerFavourite } from '@/services/favourite/favourite';
 import { BusinessDetail, Service, BusinessHourDay, BusinessReview, BusinessImageItem, Discount } from '@/types';
 import { useAuth } from '@/context/AuthContext';
+import { OnlineConsultancyBookingModal, ConsultancyBookingSuccessModal, BookingFormData } from '@/components/booking';
 
 // Image assets - using existing SVGs and images
 const logoImg = '/figma-assets/logo.svg';
@@ -318,6 +319,11 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
   const servicesPerPage = 4;
   const reviewsPerPage = 4;
   const { user, logout, loading: authLoading, authToken } = useAuth();
+  
+  // Online Consultancy Booking Modal state
+  const [isConsultancyModalOpen, setIsConsultancyModalOpen] = useState(false);
+  const [isConsultancySuccessModalOpen, setIsConsultancySuccessModalOpen] = useState(false);
+  const [consultancyBookingData, setConsultancyBookingData] = useState<BookingFormData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -542,6 +548,19 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
         }
       }
     }
+  };
+
+  // Handle online consultancy booking success
+  const handleConsultancyBookingSuccess = (bookingData: BookingFormData) => {
+    setConsultancyBookingData(bookingData);
+    setIsConsultancyModalOpen(false);
+    setIsConsultancySuccessModalOpen(true);
+  };
+
+  // Handle consultancy success modal close
+  const handleConsultancySuccessClose = () => {
+    setIsConsultancySuccessModalOpen(false);
+    setConsultancyBookingData(null);
   };
 
   const isVerified = businessData?.addons?.includes('all') || businessData?.addons?.includes('verified');
@@ -1088,7 +1107,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                           </span>
                         </div>
                         <Link href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`} className="w-full sm:w-auto">
-                          <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
+                          <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
                             Book Now
                           </button>
                         </Link>
@@ -1470,56 +1489,56 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                 )}
 
                 {/* Online Consultancy Section */}
-                <div>
-                  {/* Header */}
-                  <div className="relative flex items-center mb-4 sm:mb-5">
-                    <h2 className="text-xl sm:text-2xl font-bold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, lineHeight: '32px' }}>
-                      Online Consultancy Available
-                    </h2>
-                  </div>
+                {businessData?.is_free_consultancy && businessData?.onine_consultancy && (
+                  <div>
+                    {/* Header */}
+                    <div className="relative flex items-center mb-4 sm:mb-5">
+                      <h2 className="text-xl sm:text-2xl font-bold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, lineHeight: '32px' }}>
+                        {businessData.onine_consultancy.title || 'Online Consultancy Available'}
+                      </h2>
+                    </div>
 
-                  {/* Consultancy Card */}
-                  <div className="relative">
-                        <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
-                        <div className="absolute inset-0">
-                          <Image 
-                            alt="Online Consultancy" 
-                            className="absolute inset-0 w-full h-full object-cover opacity-20" 
-                            src="/figma-assets/yoga-session.png"
-                            fill
-                          />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
-
-                        <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
-                          <div className="text-white">
-                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed mb-2">
-                              Schedule A Free Online
-                            </p>
-                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
-                              Session With <span className="text-xl sm:text-2xl font-bold text-[#fab12f]">Experts</span> <span className="text-xl sm:text-2xl font-bold text-[#fab12f]">Today</span>
-                            </p>
+                    {/* Consultancy Card */}
+                    <div className="relative">
+                          <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
+                          <div className="absolute inset-0">
+                            <Image 
+                              alt="Online Consultancy" 
+                              className="absolute inset-0 w-full h-full object-cover opacity-20" 
+                              src={businessData.onine_consultancy.image || "/figma-assets/yoga-session.png"}
+                              fill
+                            />
                           </div>
-                          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
-                            {businessData && businessId ? (
-                              <Link href={`/booking?business_id=${businessId}`} className="w-full sm:w-auto">
-                                <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit">
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
+
+                          <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
+                            <div className="text-white">
+                              <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
+                                {businessData.onine_consultancy.customer_description || 'Schedule A Free Online Session With Experts Today'}
+                              </p>
+                            </div>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
+                              {businessData && businessId ? (
+                                <button 
+                                  onClick={() => setIsConsultancyModalOpen(true)}
+                                  className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer"
+                                >
                                   Book Now
                                 </button>
-                              </Link>
-                            ) : (
-                              <button 
-                                className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
-                                disabled
-                              >
-                                Book Now
-                              </button>
-                            )}
+                              ) : (
+                                <button 
+                                  className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
+                                  disabled
+                                >
+                                  Book Now
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -1528,6 +1547,23 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
 
       {/* Footer */}
       <Footer />
+
+      {/* Online Consultancy Booking Modal */}
+      <OnlineConsultancyBookingModal
+        isOpen={isConsultancyModalOpen}
+        onClose={() => setIsConsultancyModalOpen(false)}
+        onSuccess={handleConsultancyBookingSuccess}
+        businessName={businessData?.business_name}
+        businessId={businessId}
+      />
+
+      {/* Consultancy Booking Success Modal */}
+      <ConsultancyBookingSuccessModal
+        isOpen={isConsultancySuccessModalOpen}
+        onClose={handleConsultancySuccessClose}
+        bookingData={consultancyBookingData}
+        businessName={businessData?.business_name}
+      />
     </div>
   );
 }

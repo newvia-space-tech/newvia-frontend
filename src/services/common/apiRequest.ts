@@ -1,4 +1,6 @@
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+const X_BRANCH = process.env.NEXT_PUBLIC_X_BRANCH;
+const X_DATA_SOURCE = process.env.NEXT_PUBLIC_X_DATA_SOURCE;
 
 if (!BACKEND_API_URL) {
   throw new Error('NEXT_PUBLIC_BACKEND_API_URL environment variable is required');
@@ -19,6 +21,16 @@ export const apiRequest = async (
     ...(!isFormData && { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string>),
   };
+
+  // Add x-branch header if environment variable is set
+  if (X_BRANCH) {
+    headers['x-branch'] = X_BRANCH;
+  }
+
+  // Add x-data-source header if environment variable is set
+  if (X_DATA_SOURCE) {
+    headers['x-data-source'] = X_DATA_SOURCE;
+  }
 
   if (authToken) {
     headers.Authorization = `Bearer ${authToken}`;

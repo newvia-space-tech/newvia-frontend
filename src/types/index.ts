@@ -571,6 +571,17 @@ export interface EditServiceResponse {
 }
 
 // Public API: Business Detail
+export interface OnlineConsultancy {
+  id: string;
+  created_at: number;
+  addon_type: string;
+  is_active: boolean;
+  customer_description: string;
+  image: string;
+  amount: number;
+  title: string;
+}
+
 export interface BusinessDetail {
   id: string;
   business_name: string;
@@ -583,9 +594,11 @@ export interface BusinessDetail {
   social_media_url: string;
   cities_id: string;
   addons: string[];
+  is_free_consultancy: boolean;
   review_average: number;
   review_count: number;
   is_favourite?: boolean;
+  onine_consultancy?: OnlineConsultancy;
 }
 
 export interface BusinessDetailResponse {

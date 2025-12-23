@@ -181,14 +181,14 @@ export default function SearchBar() {
           onClick={handleSearch}
           className="bg-[#6290f2] px-3 sm:px-4 lg:px-6 py-1.5 sm:py-2 lg:py-2.5 rounded-full flex items-center justify-center gap-1 sm:gap-2 text-white text-xs sm:text-sm lg:text-base font-normal hover:bg-[#4a7ae8] transition-colors flex-shrink-0"
         >
-          <span className="hidden lg:inline">Find Wellness</span>
-          <span className="lg:hidden">Search</span>
+          <span className="hidden lg:inline cursor-pointer">Find Wellness</span>
+          <span className="lg:hidden cursor-pointer">Search</span>
           <Image
             src={searchButtonIcon}
             alt="Search"
             width={20}
             height={20}
-            className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5"
+            className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-5 lg:h-5 cursor-pointer"
           />
         </button>
       </div>
