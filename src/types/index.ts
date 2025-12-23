@@ -1276,7 +1276,7 @@ export interface UpdateSubscriptionPlanRequest {
 export interface UpdateSubscriptionPlanResponse {
   status: boolean;
   message: string;
-  payload?: any;
+  payload?: unknown;
 }
 
 export interface AdminSettlePayoutItem {
