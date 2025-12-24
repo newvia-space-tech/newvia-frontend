@@ -230,7 +230,7 @@ export default function BookingSuccessPage() {
             <p className="text-red-500 text-lg mb-4">Invalid or expired payment session.</p>
             <button
               onClick={handleBackToServices}
-              className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
               Back to Services
             </button>
@@ -269,7 +269,7 @@ export default function BookingSuccessPage() {
             </p>
             <button
               onClick={handleBackToServices}
-              className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors"
+              className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
               Back to Services
             </button>
@@ -298,16 +298,16 @@ export default function BookingSuccessPage() {
               Your payment could not be processed. Please try again.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button
-                onClick={handleRetryPayment}
-                className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors"
-                style={{ fontFamily: 'Lato, sans-serif' }}
-              >
+<button
+              onClick={handleRetryPayment}
+              className="px-6 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+              style={{ fontFamily: 'Lato, sans-serif' }}
+            >
                 Retry Payment
               </button>
               <button
                 onClick={handleBackToServices}
-                className="px-6 py-2 border border-[#6290f2] text-[#6290f2] rounded-lg hover:bg-blue-50 transition-colors"
+                className="px-6 py-2 border border-[#6290f2] text-[#6290f2] rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
                 style={{ fontFamily: 'Lato, sans-serif' }}
               >
                 Back to Services
@@ -655,7 +655,7 @@ export default function BookingSuccessPage() {
             <div className="flex justify-center">
               <button
                 onClick={handleDownloadReceipt}
-                className="w-full sm:w-auto border border-[#6290f2] rounded-lg px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-center gap-2 hover:bg-[#6290f2] hover:text-white transition-colors"
+                className="w-full sm:w-auto border border-[#6290f2] rounded-lg px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-center gap-2 hover:bg-[#6290f2] hover:text-white transition-colors cursor-pointer"
                 style={{ fontFamily: 'Lato, sans-serif' }}
               >
                 <span 

@@ -221,7 +221,7 @@ export default function SettingsPage() {
                   <button
                     onClick={handleSave}
                     disabled={updateSettingsMutation.isPending}
-                    className="bg-[#6290f2] flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:bg-[#5280e2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#6290f2] flex gap-2 items-center justify-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:bg-[#5280e2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {updateSettingsMutation.isPending && (
                       <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -267,7 +267,7 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={handleDeleteAccount}
-                className="bg-[#fcebeb] flex gap-2 items-center justify-center px-4 py-2 rounded-lg hover:bg-[#fce0e0] transition-colors self-start sm:self-auto"
+                className="bg-[#fcebeb] flex gap-2 items-center justify-center px-4 py-2 rounded-lg hover:bg-[#fce0e0] transition-colors self-start sm:self-auto cursor-pointer"
               >
                 <Trash className="w-4 h-4 sm:w-5 sm:h-5 text-[#e43636]" />
                 <span 

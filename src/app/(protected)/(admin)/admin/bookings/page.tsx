@@ -253,7 +253,7 @@ export default function BookingsPage() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`h-11 min-w-[80px] px-4 py-3 rounded-t-lg transition-colors relative ${
+                    className={`h-11 min-w-[80px] px-4 py-3 rounded-t-lg transition-colors relative cursor-pointer ${
                       activeTab === tab
                         ? 'text-black'
                         : 'text-[#797e84]'
@@ -608,7 +608,7 @@ export default function BookingsPage() {
                     <button
                       onClick={() => hasPrevPage && setCurrentPage(currentPageNum - 1)}
                       disabled={!hasPrevPage}
-                      className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <ChevronLeft size={20} className="text-[#797e84]" />
                     </button>
@@ -634,7 +634,7 @@ export default function BookingsPage() {
                           <button
                             key={page}
                             onClick={() => setCurrentPage(page as number)}
-                            className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer ${
                               currentPageNum === page
                                 ? 'bg-[#6290f2] text-white'
                                 : 'text-[#797e84] hover:bg-gray-50'
@@ -657,7 +657,7 @@ export default function BookingsPage() {
                     <button
                       onClick={() => hasNextPage && setCurrentPage(currentPageNum + 1)}
                       disabled={!hasNextPage}
-                      className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <ChevronRight size={20} className="text-[#797e84]" />
                     </button>

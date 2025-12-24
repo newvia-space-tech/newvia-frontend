@@ -683,7 +683,7 @@ export default function PaymentsPage() {
                 <button 
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={!hasPrevPage}
-                  className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors ${
+                  className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${
                     hasPrevPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
                   }`}
                 >
@@ -706,7 +706,7 @@ export default function PaymentsPage() {
                       <button
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
-                        className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer ${
                           currentPage === pageNum
                             ? 'bg-[#6290f2] text-white'
                             : 'text-[#797e84] hover:bg-gray-50'
@@ -741,7 +741,7 @@ export default function PaymentsPage() {
                       </div>
                       <button
                         onClick={() => setCurrentPage(totalPages)}
-                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[#797e84] hover:bg-gray-50 transition-colors"
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-[#797e84] hover:bg-gray-50 transition-colors cursor-pointer"
                       >
                         <span 
                           className="text-sm"
@@ -760,7 +760,7 @@ export default function PaymentsPage() {
                 <button 
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   disabled={!hasNextPage}
-                  className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors ${
+                  className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${
                     hasNextPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
                   }`}
                 >

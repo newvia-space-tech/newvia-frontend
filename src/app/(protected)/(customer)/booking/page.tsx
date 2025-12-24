@@ -785,7 +785,7 @@ export default function BookingPage() {
                       <button 
                         onClick={() => navigateDates('prev')}
                         disabled={!canNavigatePrev()}
-                        className={`p-1 rounded transition-colors ${
+                        className={`p-1 rounded transition-colors cursor-pointer ${
                           canNavigatePrev() 
                             ? 'hover:bg-gray-100' 
                             : 'opacity-30 cursor-not-allowed'
@@ -799,7 +799,7 @@ export default function BookingPage() {
                       </button>
                       <button 
                         onClick={() => navigateDates('next')}
-                        className="p-1 hover:bg-gray-100 rounded"
+                        className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                       >
                         <div className="w-4 h-4">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -819,7 +819,7 @@ export default function BookingPage() {
                         <div key={`${dateItem.day}-${dateItem.date}-${index}`} className="flex-1 min-w-[60px] sm:min-w-0">
                           <button
                             onClick={() => handleDateSelect(dateItem.fullDate)}
-                            className={`w-full border border-solid box-border flex flex-col gap-1 items-center justify-center p-2 sm:p-3 rounded text-xs sm:text-sm transition-colors ${
+                            className={`w-full border border-solid box-border flex flex-col gap-1 items-center justify-center p-2 sm:p-3 rounded text-xs sm:text-sm transition-colors cursor-pointer ${
                               isSelected
                                 ? 'bg-black border-black'
                                 : 'border-[#e5e7ea] hover:border-gray-300'
@@ -880,7 +880,7 @@ export default function BookingPage() {
                               <button
                                 key={slot.timestamp}
                                 onClick={() => handleTimeSelect(slot.timestamp)}
-                                className={`p-3 rounded border text-sm transition-colors whitespace-nowrap ${
+                                className={`p-3 rounded border text-sm transition-colors whitespace-nowrap cursor-pointer ${
                                   isSelected
                                     ? 'bg-black border-black text-white'
                                     : 'border-[#e5e7ea] hover:border-gray-300 text-[#797e84]'
@@ -900,7 +900,7 @@ export default function BookingPage() {
                             <button
                               key={slot.timestamp}
                               onClick={() => handleTimeSelect(slot.timestamp)}
-                              className={`p-3 rounded border text-sm transition-colors ${
+                              className={`p-3 rounded border text-sm transition-colors cursor-pointer ${
                                 isSelected
                                   ? 'bg-black border-black text-white'
                                   : 'border-[#e5e7ea] hover:border-gray-300 text-[#797e84]'
@@ -921,7 +921,7 @@ export default function BookingPage() {
                   {/* Back Button */}
                   <button
                     onClick={handleBackToDateSelection}
-                    className="border border-[rgba(0,0,0,0.2)] rounded-lg p-3 mb-8 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                    className="border border-[rgba(0,0,0,0.2)] rounded-lg p-3 mb-8 flex items-center justify-center hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <ArrowLeft className="w-5 h-5 text-black" />
                   </button>
@@ -1266,7 +1266,7 @@ export default function BookingPage() {
                       <button
                         onClick={handleContinue}
                         disabled={!selectedDate || !selectedTime}
-                        className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-colors ${
+                        className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-colors cursor-pointer ${
                           selectedDate && selectedTime
                             ? 'bg-[#6290f2] text-white hover:bg-blue-600'
                             : 'bg-[#6290f2] text-white opacity-30 cursor-not-allowed'
@@ -1280,7 +1280,7 @@ export default function BookingPage() {
                         <button
                           onClick={handleSubmitBooking}
                           disabled={isCreatingCheckout}
-                          className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-colors ${
+                          className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm sm:text-base font-medium transition-colors cursor-pointer ${
                             isCreatingCheckout
                               ? 'bg-[#6290f2] text-white opacity-50 cursor-not-allowed'
                               : 'bg-[#6290f2] text-white hover:bg-blue-600'

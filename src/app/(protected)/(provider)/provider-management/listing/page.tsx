@@ -700,7 +700,7 @@ export default function ListingPage() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] ${
+                  className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${
                     isActive
                       ? 'text-black'
                       : 'text-[#797e84] hover:text-black'
@@ -742,7 +742,7 @@ export default function ListingPage() {
                   <button
                     onClick={handleEdit}
                     disabled={isLoading || !!error}
-                    className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <Pencil size={18} className="text-black" />
                     <span 
@@ -796,7 +796,7 @@ export default function ListingPage() {
                       </p>
                       <button
                         onClick={() => refetch()}
-                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                         style={{ 
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
@@ -997,7 +997,7 @@ export default function ListingPage() {
                     <button
                       onClick={handleLocationEdit}
                       disabled={isLoadingLocation || !!locationError}
-                      className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <Pencil size={18} className="text-black" />
                       <span 
@@ -1051,7 +1051,7 @@ export default function ListingPage() {
                         </p>
                         <button
                           onClick={() => refetchLocation()}
-                          className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                          className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                           style={{ 
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
@@ -1200,7 +1200,7 @@ export default function ListingPage() {
                     <button
                       onClick={handleWorkingHoursEdit}
                       disabled={isLoadingHours || !!hoursError}
-                      className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <Pencil size={18} className="text-black" />
                       <span 
@@ -1254,7 +1254,7 @@ export default function ListingPage() {
                         </p>
                         <button
                           onClick={() => refetchHours()}
-                          className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                          className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                           style={{ 
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
@@ -1364,7 +1364,7 @@ export default function ListingPage() {
                   </div>
                   <button
                     onClick={() => setIsOnlineConsultancyEnabled(!isOnlineConsultancyEnabled)}
-                    className={`relative inline-flex h-6 w-9 items-center rounded-full transition-colors ${
+                    className={`relative inline-flex h-6 w-9 items-center rounded-full transition-colors cursor-pointer ${
                       isOnlineConsultancyEnabled ? 'bg-[#6290f2]' : 'bg-gray-300'
                     }`}
                   >
@@ -1396,7 +1396,7 @@ export default function ListingPage() {
                   </div>
                   <button
                     onClick={handleAddService}
-                    className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <Plus size={18} className="text-black" />
                     <span 
@@ -1450,7 +1450,7 @@ export default function ListingPage() {
                       </p>
                       <button
                         onClick={() => refetchServices()}
-                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                         style={{ 
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
@@ -1540,14 +1540,14 @@ export default function ListingPage() {
                         <div className="flex gap-2 items-center">
                           <button
                             onClick={() => handleEditService(service)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                             title="Edit service"
                           >
                             <Pencil size={20} className="text-black" />
                           </button>
                           <button
                             onClick={() => handleDeleteService(service.id)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                             title="Delete service"
                           >
                             <Trash2 size={20} className="text-black" />
@@ -1619,7 +1619,7 @@ export default function ListingPage() {
                     </div>
                     <button
                       onClick={() => setIsEditGalleryModalOpen(true)}
-                      className="flex items-center gap-2 px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                       style={{ 
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 400,
@@ -1738,7 +1738,7 @@ export default function ListingPage() {
                       </p>
                       <button
                         onClick={() => refetchAccountDetails()}
-                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                        className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                         style={{ 
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
@@ -1834,7 +1834,7 @@ export default function ListingPage() {
                         <button
                           onClick={handleSaveAccountDetails}
                           disabled={addAccountDetailsMutation.isPending}
-                          className="px-6 py-2.5 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+                          className="px-6 py-2.5 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] cursor-pointer"
                           style={{ 
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,

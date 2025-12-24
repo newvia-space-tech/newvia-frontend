@@ -258,7 +258,7 @@ export default function BlogsManagementPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="bg-[#6290f2] flex gap-2 items-center justify-center px-3 sm:px-4 py-2 rounded-lg hover:bg-[#6290f2]/90 transition-colors"
+                className="bg-[#6290f2] flex gap-2 items-center justify-center px-3 sm:px-4 py-2 rounded-lg hover:bg-[#6290f2]/90 transition-colors cursor-pointer"
               >
                 <Plus size={20} className="text-white" />
                 <p 
@@ -388,7 +388,7 @@ export default function BlogsManagementPage() {
                       <div className="absolute top-4 right-4" ref={(el) => { dropdownRefs.current[blog.id] = el; }}>
                         <button
                           onClick={(e) => handleMenuClick(e, blog.id)}
-                          className="bg-white flex items-center justify-center p-1 rounded-md hover:bg-gray-50 transition-colors w-8 h-8"
+                          className="bg-white flex items-center justify-center p-1 rounded-md hover:bg-gray-50 transition-colors w-8 h-8 cursor-pointer"
                         >
                           <MoreVertical size={16} className="text-black" />
                         </button>
@@ -397,7 +397,7 @@ export default function BlogsManagementPage() {
                           <div className="absolute top-10 right-0 bg-white border border-[#e5e7ea] rounded-lg shadow-lg z-[9999] w-[200px]">
                             <button
                               onClick={(e) => handleEdit(e, blog.id)}
-                              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 first:rounded-t-lg transition-colors"
+                              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 first:rounded-t-lg transition-colors cursor-pointer"
                             >
                               <Pencil size={18} className="text-black" />
                               <span
@@ -413,7 +413,7 @@ export default function BlogsManagementPage() {
                             </button>
                             <button
                               onClick={(e) => handleDelete(e, blog.id, blog.title)}
-                              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 last:rounded-b-lg transition-colors"
+                              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 last:rounded-b-lg transition-colors cursor-pointer"
                             >
                               <Trash2 size={18} className="text-[#e43636]" />
                               <span
@@ -538,7 +538,7 @@ export default function BlogsManagementPage() {
                       <button
                         onClick={() => hasPrevPage && setCurrentPage(currentPageNum - 1)}
                         disabled={!hasPrevPage}
-                        className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
                         <ChevronLeft size={20} className="text-[#797e84]" />
                       </button>
@@ -564,7 +564,7 @@ export default function BlogsManagementPage() {
                             <button
                               key={page}
                               onClick={() => setCurrentPage(page as number)}
-                              className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                              className={`w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer ${
                                 currentPageNum === page
                                   ? 'bg-[#6290f2] text-white'
                                   : 'text-[#797e84] hover:bg-gray-50'
@@ -587,7 +587,7 @@ export default function BlogsManagementPage() {
                       <button
                         onClick={() => hasNextPage && setCurrentPage(currentPageNum + 1)}
                         disabled={!hasNextPage}
-                        className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
                         <ChevronRight size={20} className="text-[#797e84]" />
                       </button>
