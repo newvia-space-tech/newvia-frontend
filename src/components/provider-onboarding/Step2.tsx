@@ -298,10 +298,15 @@ export default function Step2() {
             label="Business Phone Number"
             type="tel"
             value={step2Data.businessPhoneNumber}
-            onChange={(value) => handleInputChange('businessPhoneNumber', value)}
+            onChange={(value) => {
+              // Only allow digits and + sign for country code
+              const numericValue = value.replace(/[^\d+]/g, '');
+              handleInputChange('businessPhoneNumber', numericValue);
+            }}
             onBlur={() => handleBlur('businessPhoneNumber')}
             placeholder="0123456789"
             error={errors.businessPhoneNumber}
+            helperText="Numbers only (e.g., +60123456789)"
             className="flex-1"
             maxLength={15}
           />
