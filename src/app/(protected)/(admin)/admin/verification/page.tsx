@@ -451,8 +451,8 @@ export default function VerificationPage() {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex gap-6">
-                              <div className="flex flex-col gap-1.5 w-[188px]">
+                            <div className="flex gap-8 flex-wrap">
+                              <div className="flex flex-col gap-1.5 min-w-[180px] max-w-[280px]">
                                 <p 
                                   className="text-sm text-[#797e84]"
                                   style={{ 
@@ -464,17 +464,18 @@ export default function VerificationPage() {
                                   Email
                                 </p>
                                 <p 
-                                  className="text-base text-black"
+                                  className="text-base text-black break-all"
                                   style={{ 
                                     fontFamily: 'Lato, sans-serif',
                                     fontWeight: 400,
                                     lineHeight: '24px'
                                   }}
+                                  title={provider.owner_email_id}
                                 >
                                   {provider.owner_email_id}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1.5 w-[188px]">
+                              <div className="flex flex-col gap-1.5 min-w-[120px]">
                                 <p 
                                   className="text-sm text-[#797e84]"
                                   style={{ 
@@ -496,7 +497,7 @@ export default function VerificationPage() {
                                   {provider.phone_number}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1.5 w-[188px]">
+                              <div className="flex flex-col gap-1.5 min-w-[120px]">
                                 <p 
                                   className="text-sm text-[#797e84]"
                                   style={{ 
