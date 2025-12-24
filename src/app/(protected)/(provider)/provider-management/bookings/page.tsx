@@ -218,7 +218,7 @@ export default function BookingsPage() {
           <div className="flex items-center gap-0 border-b border-[#e5e7ea] mb-4 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <button
               onClick={() => setActiveTab('upcoming')}
-              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] ${
+              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${
                 activeTab === 'upcoming'
                   ? 'text-black'
                   : 'text-[#797e84] hover:text-black'
@@ -236,7 +236,7 @@ export default function BookingsPage() {
             </button>
             <button
               onClick={() => setActiveTab('past')}
-              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] ${
+              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${
                 activeTab === 'past'
                   ? 'text-black'
                   : 'text-[#797e84] hover:text-black'
@@ -254,7 +254,7 @@ export default function BookingsPage() {
             </button>
             <button
               onClick={() => setActiveTab('cancelled')}
-              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] ${
+              className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${
                 activeTab === 'cancelled'
                   ? 'text-black'
                   : 'text-[#797e84] hover:text-black'
@@ -490,7 +490,7 @@ export default function BookingsPage() {
                       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-end w-full lg:w-auto">
                         <button
                           onClick={() => handleView(apiBooking.id)}
-                          className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors"
+                          className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                         >
                           <Eye size={18} className="text-black" />
                           <span 
@@ -507,7 +507,7 @@ export default function BookingsPage() {
                         {activeTab === 'upcoming' && (
                           <button
                             onClick={() => handleCancelClick(apiBooking.id)}
-                            className="flex gap-2 items-center px-4 py-1.5 border border-[#fcebeb] rounded-lg hover:bg-red-50 transition-colors"
+                            className="flex gap-2 items-center px-4 py-1.5 border border-[#fcebeb] rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
                           >
                             <X size={18} className="text-[#e43636]" />
                             <span 

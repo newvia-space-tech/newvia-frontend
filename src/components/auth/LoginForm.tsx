@@ -285,11 +285,11 @@ export default function LoginForm({ role }: LoginFormProps) {
           {/* Terms and Privacy */}
           <p className="text-xs text-gray-500 mt-6">
             By continuing, you agree to our{' '}
-            <a href="#" className="text-gray-700 hover:underline font-medium">
+            <a href="/terms" className="text-gray-700 hover:underline font-medium">
               Terms of Service
             </a>{' '}
             and{' '}
-            <a href="#" className="text-gray-700 hover:underline font-medium">
+            <a href="/privacy" className="text-gray-700 hover:underline font-medium">
               Privacy Policy
             </a>
           </p>

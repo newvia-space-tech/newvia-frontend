@@ -310,11 +310,11 @@ export default function CreateAccountForm({ role }: CreateAccountFormProps) {
                   className="text-xs text-gray-600"
                 >
                   By continuing, you have read and agree to our{' '}
-                  <a href="#" className="text-gray-800 underline hover:text-gray-900">
+                  <a href="/terms" className="text-gray-800 underline hover:text-gray-900">
                     Terms and Conditions
                   </a>{' '}
                   and{' '}
-                  <a href="#" className="text-gray-800 underline hover:text-gray-900">
+                  <a href="/privacy" className="text-gray-800 underline hover:text-gray-900">
                     Privacy Statement
                   </a>
                 </label>

@@ -139,7 +139,7 @@ export default function BookingCancelPage() {
             </div>
             <button
               onClick={handleRetryPayment}
-              className="w-full sm:w-auto bg-[#6290f2] text-white rounded-lg px-4 py-2.5 hover:bg-[#4a7ae8] transition-colors text-sm font-normal leading-[20px]"
+              className="w-full sm:w-auto bg-[#6290f2] text-white rounded-lg px-4 py-2.5 hover:bg-[#4a7ae8] transition-colors text-sm font-normal leading-[20px] cursor-pointer"
               style={{ fontFamily: 'Lato, sans-serif' }}
             >
               Retry Payment
@@ -205,7 +205,7 @@ export default function BookingCancelPage() {
           {/* Retry Payment Button */}
           <button
             onClick={handleRetryPayment}
-            className="bg-[#6290f2] text-white rounded-lg px-4 sm:px-4 py-2.5 sm:py-2.5 min-h-[36px] w-full hover:bg-[#4a7ae8] transition-colors flex items-center justify-center"
+            className="bg-[#6290f2] text-white rounded-lg px-4 sm:px-4 py-2.5 sm:py-2.5 min-h-[36px] w-full hover:bg-[#4a7ae8] transition-colors flex items-center justify-center cursor-pointer"
             style={{ fontFamily: 'Lato, sans-serif' }}
           >
             <span className="text-sm font-normal leading-[20px] whitespace-pre">

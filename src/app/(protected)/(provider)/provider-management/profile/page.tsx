@@ -141,7 +141,7 @@ export default function ProfilePage() {
                 </p>
                 <button
                   onClick={() => refetch()}
-                  className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors"
+                  className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
                   style={{ 
                     fontFamily: 'Lato, sans-serif',
                     fontWeight: 500,
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                     <div className="flex gap-2">
                       <button 
                         onClick={handleEditClick}
-                        className="border border-[#e5e7ea] flex gap-2 items-center px-4 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="border border-[#e5e7ea] flex gap-2 items-center px-4 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                       >
                         <div className="w-4.5 h-4.5">
                           <Pencil 

@@ -19,6 +19,7 @@ export default function Step4() {
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (providerData.step1.gallery && providerData.step1.gallery.length > 0) {
@@ -78,10 +79,12 @@ export default function Step4() {
   };
 
   const handleSubmit = async () => {
+    // Clear any previous error
+    setErrorMessage(null);
+    
     try {
       // Check if user is authenticated
       if (!user || !authToken) {
-        alert('You must be logged in to submit the onboarding form.');
         router.push('/auth/login/provider');
         return;
       }
@@ -94,7 +97,7 @@ export default function Step4() {
       // Validate payload before submission
       const validation = validateOnboardingPayload(apiPayload);
       if (!validation.isValid) {
-        alert(`Validation error: ${validation.error}`);
+        setErrorMessage(validation.error || 'Please fill in all required fields.');
         setIsSubmitting(false);
         return;
       }
@@ -111,8 +114,8 @@ export default function Step4() {
       
     } catch (error) {
       console.error('Error submitting form:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred. Please try again.';
-      alert(`Submission failed: ${errorMessage}`);
+      const errMsg = error instanceof Error ? error.message : 'An error occurred. Please try again.';
+      setErrorMessage(errMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -282,23 +285,23 @@ export default function Step4() {
 
             {/* Phone, Social Media, Consultancy */}
             <div className="flex gap-5">
-              <div className="w-[253px] flex flex-col gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <label className="text-sm text-[#797e84]" style={{ fontFamily: 'Lato, sans-serif' }}>
                   Business Phone Number
                 </label>
-                <p className="text-base text-black" style={{ fontFamily: 'Lato, sans-serif' }}>
+                <p className="text-base text-black truncate" style={{ fontFamily: 'Lato, sans-serif' }}>
                   {providerData.step2.businessPhoneNumber || '-'}
                 </p>
               </div>
-              <div className="w-[253px] flex flex-col gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <label className="text-sm text-[#797e84]" style={{ fontFamily: 'Lato, sans-serif' }}>
                   Social Media
                 </label>
-                <p className="text-base text-black" style={{ fontFamily: 'Lato, sans-serif' }}>
+                <p className="text-base text-black truncate" title={providerData.step2.socialMedia || '-'} style={{ fontFamily: 'Lato, sans-serif' }}>
                   {providerData.step2.socialMedia || '-'}
                 </p>
               </div>
-              <div className="w-[253px] flex flex-col gap-2">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <label className="text-sm text-[#797e84]" style={{ fontFamily: 'Lato, sans-serif' }}>
                   Free Consultancy
                 </label>
@@ -399,6 +402,18 @@ export default function Step4() {
           </div>
         </div>
       </div>
+
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+            <span className="text-red-600 text-sm font-bold">!</span>
+          </div>
+          <p className="text-red-700 text-sm" style={{ fontFamily: 'Lato, sans-serif' }}>
+            {errorMessage}
+          </p>
+        </div>
+      )}
 
       {/* Navigation Buttons */}
       <div className="flex justify-end gap-4 w-full">
