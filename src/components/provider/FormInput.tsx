@@ -7,6 +7,7 @@ interface FormInputProps {
   onBlur?: () => void;
   required?: boolean;
   error?: string;
+  helperText?: string;
   className?: string;
   maxLength?: number;
   pattern?: string;
@@ -23,6 +24,7 @@ export default function FormInput({
   onBlur,
   required = false,
   error,
+  helperText,
   className = '',
   maxLength,
   pattern,
@@ -51,6 +53,9 @@ export default function FormInput({
       />
       {error && (
         <p className="text-sm text-red-500">{error}</p>
+      )}
+      {helperText && !error && (
+        <p className="text-xs text-[#797e84]">{helperText}</p>
       )}
     </div>
   );

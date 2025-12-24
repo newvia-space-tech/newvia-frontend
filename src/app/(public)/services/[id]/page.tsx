@@ -3,7 +3,7 @@
 import React, { use, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Heart, Share2, ChevronRight, ChevronLeft } from 'lucide-react';
 import UnifiedHeader from '@/components/layout/UnifiedHeader';
 import Footer from '@/components/layout/Footer';
@@ -318,12 +318,22 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
   const imageCarouselRef = React.useRef<HTMLDivElement>(null);
   const servicesPerPage = 4;
   const reviewsPerPage = 4;
-  const { user, logout, loading: authLoading, authToken } = useAuth();
+  const { user, logout, loading: authLoading, authToken, isAuthenticated } = useAuth();
+  const router = useRouter();
   
   // Online Consultancy Booking Modal state
   const [isConsultancyModalOpen, setIsConsultancyModalOpen] = useState(false);
   const [isConsultancySuccessModalOpen, setIsConsultancySuccessModalOpen] = useState(false);
   const [consultancyBookingData, setConsultancyBookingData] = useState<BookingFormData | null>(null);
+
+  // Handle consultancy booking click - check if user is authenticated
+  const handleConsultancyBookClick = () => {
+    if (!isAuthenticated) {
+      router.push('/auth/login/customer');
+      return;
+    }
+    setIsConsultancyModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1520,10 +1530,10 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                             <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
                               {businessData && businessId ? (
                                 <button 
-                                  onClick={() => setIsConsultancyModalOpen(true)}
+                                  onClick={handleConsultancyBookClick}
                                   className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer"
                                 >
-                                  Book Now
+                                  {isAuthenticated ? 'Book Now' : 'Login to Book'}
                                 </button>
                               ) : (
                                 <button 
