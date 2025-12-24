@@ -211,7 +211,7 @@ export default function SettingsPage() {
                 {/* Delete Button */}
                 <button
                   onClick={handleDeleteAccount}
-                  className="bg-[#fcebeb] hover:bg-[#fadada] flex gap-2 items-center justify-center px-4 py-2.5 rounded-lg transition-colors"
+                  className="bg-[#fcebeb] hover:bg-[#fadada] flex gap-2 items-center justify-center px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
                 >
                   <Trash2 size={20} className="text-[#e43636]" />
                   <span 

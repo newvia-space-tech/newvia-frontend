@@ -115,9 +115,7 @@ export function validateOnboardingPayload(payload: ApiOnboardingPayload): {
   if (!payload.business_registration_number?.trim()) {
     return { isValid: false, error: 'Business registration number is required' };
   }
-  if (!payload.description?.trim()) {
-    return { isValid: false, error: 'Business description is required' };
-  }
+  // Description is optional - no validation required
   if (!payload.business_address?.trim()) {
     return { isValid: false, error: 'Business address is required' };
   }

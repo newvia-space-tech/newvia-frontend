@@ -176,7 +176,7 @@ export default function AccountPage() {
                   <div className="flex flex-wrap gap-2">
                     <button 
                       onClick={handleEditClick}
-                      className="border border-[#e5e7ea] flex gap-2 items-center px-4 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="border border-[#e5e7ea] flex gap-2 items-center px-4 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       <div className="w-4.5 h-4.5">
                         <Pencil 

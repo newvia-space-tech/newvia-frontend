@@ -368,7 +368,7 @@ export default function OverviewPage() {
                   </p>
                 </div>
                 {upcomingBookingsHasMore && (
-                  <button className="flex gap-1 items-center">
+                  <button className="flex gap-1 items-center cursor-pointer">
                     <span 
                       className="text-sm text-[#797e84]"
                       style={{ 
@@ -503,7 +503,7 @@ export default function OverviewPage() {
                   </p>
                 </div>
                 {recentReviewsHasMore && (
-                  <button className="flex gap-1 items-center">
+                  <button className="flex gap-1 items-center cursor-pointer">
                     <span 
                       className="text-sm text-[#797e84]"
                       style={{ 

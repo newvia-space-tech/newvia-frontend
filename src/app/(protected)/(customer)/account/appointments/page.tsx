@@ -215,7 +215,7 @@ export default function AppointmentsPage() {
               <div className="flex min-w-max">
                 <button
                   onClick={() => setActiveTab('upcoming')}
-                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                     activeTab === 'upcoming'
                       ? 'border-black text-black'
                       : 'border-transparent text-[#9ea5ad]'
@@ -230,7 +230,7 @@ export default function AppointmentsPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab('past')}
-                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                     activeTab === 'past'
                       ? 'border-black text-black'
                       : 'border-transparent text-[#9ea5ad]'
@@ -245,7 +245,7 @@ export default function AppointmentsPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab('cancelled')}
-                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                     activeTab === 'cancelled'
                       ? 'border-black text-black'
                       : 'border-transparent text-[#9ea5ad]'
@@ -433,7 +433,7 @@ export default function AppointmentsPage() {
                             /* Cancel Button for Upcoming */
                             <button
                               onClick={() => handleCancelClick(appointment)}
-                              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 border border-[#fcebeb] rounded-lg hover:bg-red-50 transition-colors flex-1 sm:flex-initial"
+                              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 border border-[#fcebeb] rounded-lg hover:bg-red-50 transition-colors flex-1 sm:flex-initial cursor-pointer"
                             >
                               <X className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#e43636]" />
                               <span
@@ -486,7 +486,7 @@ export default function AppointmentsPage() {
                             </div>
                           ) : (
                             /* Book Again Button for Cancelled */
-                            <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors w-full sm:w-auto">
+                            <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors w-full sm:w-auto cursor-pointer">
                               <Repeat className="w-4 h-4" />
                               <span
                                 className="text-sm sm:text-base"

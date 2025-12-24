@@ -318,7 +318,7 @@ export default function PricingPlanPage() {
                     <div className="flex flex-col gap-2 mt-8">
                       <button
                         onClick={() => handleEdit(plan)}
-                        className="border border-[#6290f2] rounded-lg px-4 py-2 flex items-center justify-center hover:bg-[#6290f2]/5 transition-colors"
+                        className="border border-[#6290f2] rounded-lg px-4 py-2 flex items-center justify-center hover:bg-[#6290f2]/5 transition-colors cursor-pointer"
                       >
                         <p 
                           className="text-sm text-[#6290f2]"

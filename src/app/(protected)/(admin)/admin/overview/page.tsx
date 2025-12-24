@@ -266,7 +266,7 @@ export default function AdminOverviewPage() {
                 </div>
                 {providerVerificationData?.payload && providerVerificationData.payload.pageTotal > 1 && (
                   <button 
-                    className="flex gap-1 items-center hover:opacity-70 transition-opacity"
+                    className="flex gap-1 items-center hover:opacity-70 transition-opacity cursor-pointer"
                     onClick={() => {
                       router.push('/admin/verification');
                     }}
@@ -410,7 +410,7 @@ export default function AdminOverviewPage() {
                 </div>
                 {recentReviewsData?.payload && recentReviewsData.payload.pageTotal > 1 && (
                   <button 
-                    className="flex gap-1 items-center hover:opacity-70 transition-opacity"
+                    className="flex gap-1 items-center hover:opacity-70 transition-opacity cursor-pointer"
                     onClick={() => {
                       router.push('/admin/review');
                     }}

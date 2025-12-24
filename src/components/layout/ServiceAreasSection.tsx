@@ -1,13 +1,19 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useMajorCities } from '@/hooks/city/useMajorCities';
 
 // Image assets
 const forwardArrowIcon = '/figma-assets/forward-arrow.svg';
 
 export default function ServiceAreasSection() {
+  const router = useRouter();
   const { data: cities, isLoading, error } = useMajorCities();
+
+  const handleCityClick = (cityName: string, cityId: string) => {
+    router.push(`/services?location=${encodeURIComponent(cityName)}&city_id=${cityId}`);
+  };
 
   return (
     <div className="bg-white w-full py-16 px-4 sm:px-8 lg:px-16 xl:px-20">
@@ -51,6 +57,7 @@ export default function ServiceAreasSection() {
             {cities.map((city) => (
               <div
                 key={city.city_id}
+                onClick={() => handleCityClick(city.name, city.city_id)}
                 className="flex-shrink-0 w-80 h-64 relative rounded-xl overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
               >
                 {/* City Image */}

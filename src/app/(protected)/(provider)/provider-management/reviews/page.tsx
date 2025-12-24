@@ -123,7 +123,7 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-0 border-b border-[#e5e7ea]">
                 <button
                   onClick={() => setActiveTab('all')}
-                  className={`px-4 py-3 transition-colors relative min-h-[36px] ${
+                  className={`px-4 py-3 transition-colors relative min-h-[36px] cursor-pointer ${
                     activeTab === 'all'
                       ? 'text-black'
                       : 'text-[#797e84] hover:text-black'
@@ -142,7 +142,7 @@ export default function ReviewsPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab('flagged')}
-                  className={`px-4 py-3 transition-colors relative min-h-[36px] ${
+                  className={`px-4 py-3 transition-colors relative min-h-[36px] cursor-pointer ${
                     activeTab === 'flagged'
                       ? 'text-[#e43636]'
                       : 'text-[#797e84] hover:text-black'
@@ -315,7 +315,7 @@ export default function ReviewsPage() {
                             {/* Flag Button */}
                             <button
                               onClick={() => handleFlag(review.id, review.is_flagged)}
-                              className={`flex gap-2 items-center px-4 py-1.5 rounded-lg transition-colors mt-6 ${
+                              className={`flex gap-2 items-center px-4 py-1.5 rounded-lg transition-colors mt-6 cursor-pointer ${
                                 review.is_flagged
                                   ? 'bg-[#e43636] hover:bg-[#d32f2f]'
                                   : 'border border-[#fcebeb] hover:bg-red-50'

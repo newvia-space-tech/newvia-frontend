@@ -213,9 +213,7 @@ export default function Step2() {
     step2Data.cityId && // City requires state
     /^\d{5}$/.test(step2Data.postalCode.trim()) &&
     (!step2Data.businessPhoneNumber.trim() || /^(\+?6?0)?[0-9]{9,11}$/.test(step2Data.businessPhoneNumber.trim().replace(/[\s-]/g, ''))) &&
-    !statesLoading && // Ensure data is loaded
-    !citiesByStateLoading &&
-    !allCitiesLoading;
+    !statesLoading; // Only need to ensure states are loaded, city loading is checked conditionally
 
   return (
     <div className="max-w-[980px] mx-auto space-y-5">
