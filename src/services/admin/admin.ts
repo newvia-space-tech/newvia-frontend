@@ -252,7 +252,7 @@ export const approveRejectProvider = async (
   const response = await apiRequest(
     'admin/reject-provider',
     {
-      method: 'PUT',
+      method: 'POST',
       body: JSON.stringify(payload)
     },
     adminToken
