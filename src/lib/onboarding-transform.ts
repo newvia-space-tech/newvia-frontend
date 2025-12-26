@@ -70,11 +70,13 @@ function transformServices(services: ProviderData['step3']['services']): ApiServ
  * Main transformation function: Converts store data to API payload
  * @param providerData - Data from Zustand store
  * @param userId - Current user's ID (from auth context)
+ * @param imageUrls - Array of uploaded image URLs (from uploadImages API)
  * @returns API-ready payload
  */
 export function transformOnboardingDataToApi(
   providerData: ProviderData,
-  userId: string
+  userId: string,
+  imageUrls: string[] = []
 ): ApiOnboardingPayload {
   const { step1, step2, step3 } = providerData;
 
@@ -93,6 +95,7 @@ export function transformOnboardingDataToApi(
     working_hours: transformWorkingHours(step2.workingHours),
     services: transformServices(step3.services),
     user_id: userId,
+    images: imageUrls,
   };
 }
 

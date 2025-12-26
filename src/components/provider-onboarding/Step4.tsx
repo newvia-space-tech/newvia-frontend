@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Store, MapPin, Tag as TagIcon, Pencil, Clock3 } from 'lucide-react';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 import { transformOnboardingDataToApi, validateOnboardingPayload } from '@/lib/onboarding-transform';
-import { submitProviderOnboarding } from '@/services/business/business';
+import { submitProviderOnboarding, uploadImages } from '@/services/business/business';
 import { useAuth } from '@/context/AuthContext';
 import SubmissionSuccessModal from './SubmissionSuccessModal';
 
@@ -91,8 +91,25 @@ export default function Step4() {
 
       setIsSubmitting(true);
       
-      // Transform store data to API payload format
-      const apiPayload = transformOnboardingDataToApi(providerData, user.id);
+      // Step 1: Upload gallery images if any
+      let imageUrls: string[] = [];
+      if (providerData.step1.gallery && providerData.step1.gallery.length > 0) {
+        console.log('Uploading gallery images...');
+        const uploadResponse = await uploadImages(
+          providerData.step1.gallery,
+          user.id,
+          authToken
+        );
+        
+        // Extract image URLs from the upload response
+        if (uploadResponse.payload && Array.isArray(uploadResponse.payload)) {
+          imageUrls = uploadResponse.payload;
+          console.log('Images uploaded successfully:', imageUrls);
+        }
+      }
+      
+      // Step 2: Transform store data to API payload format (with image URLs)
+      const apiPayload = transformOnboardingDataToApi(providerData, user.id, imageUrls);
       
       // Validate payload before submission
       const validation = validateOnboardingPayload(apiPayload);
@@ -104,7 +121,7 @@ export default function Step4() {
       
       console.log('API Payload:', JSON.stringify(apiPayload, null, 2));
       
-      // Submit to API
+      // Step 3: Submit to API
       const response = await submitProviderOnboarding(apiPayload, authToken);
       
       console.log('API Response:', response);
