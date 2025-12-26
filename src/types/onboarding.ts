@@ -101,5 +101,6 @@ export interface ApiOnboardingPayload {
   working_hours: ApiWorkingHours[];
   services: ApiService[];
   user_id: string;
+  images: string[]; // Array of uploaded image URLs
 }
 
