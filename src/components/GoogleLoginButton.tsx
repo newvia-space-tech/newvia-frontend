@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { PostMessageData, UserRole } from '@/types';
 import GoogleIcon from '@/components/shared/GoogleIcon';
@@ -22,6 +22,10 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Get return URL from query params
+  const returnUrl = searchParams.get('returnUrl');
 
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
@@ -77,7 +81,14 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
             const storedUser = localStorage.getItem('user');
             console.log('🔍 localStorage after login:', { storedToken: !!storedToken, storedUser: !!storedUser });
             
-            // Provider routing logic
+            // If there's a return URL, use it (for customers and providers)
+            if (returnUrl) {
+              console.log('🔙 Redirecting to return URL:', returnUrl);
+              router.replace(decodeURIComponent(returnUrl));
+              return;
+            }
+            
+            // Provider routing logic (only if no return URL)
             if (resolvedRole === 'provider') {
               // If not onboarded, redirect to onboarding flow
               if (user?.isOnboarded === false) {

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { X, UserRound, CalendarCheck, Heart, Settings, LogOut } from 'lucide-react';
+import { X, UserRound, CalendarCheck, Heart, Settings, LogOut, KeyRound } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import CompactSearchBar from '@/components/shared/CompactSearchBar';
 
@@ -40,6 +40,7 @@ export default function UnifiedHeader({
     if (pathname === '/account/appointments') return 'appointments';
     if (pathname === '/account/favourite') return 'favourite';
     if (pathname === '/account/settings') return 'settings';
+    if (pathname === '/account/reset-password') return 'reset-password';
     return null;
   };
   
@@ -164,6 +165,19 @@ export default function UnifiedHeader({
                               >
                                 <Settings className="w-5 h-5" />
                                 Settings
+                              </Link>
+                              <Link 
+                                href="/account/reset-password"
+                                onClick={closeMenu}
+                                className={`lg:hidden flex items-center gap-3 px-4 py-2 text-base transition-colors rounded-lg ${
+                                  activeSection === 'reset-password'
+                                    ? 'bg-[#eff4fe] text-[#6290f2]'
+                                    : 'text-black hover:bg-gray-50'
+                                }`}
+                                style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400 }}
+                              >
+                                <KeyRound className="w-5 h-5" />
+                                Reset Password
                               </Link>
                               
                               {/* About Us, Blogs, and Logout - visible on both mobile and desktop */}

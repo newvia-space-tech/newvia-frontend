@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { UserRound, CalendarCheck, Heart, Settings, LogOut } from 'lucide-react';
+import { UserRound, CalendarCheck, Heart, Settings, LogOut, KeyRound } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface CustomerAccountSidebarProps {
@@ -44,6 +44,12 @@ export default function CustomerAccountSidebar({ activeSection = 'profile' }: Cu
       label: 'Settings',
       icon: Settings,
       href: '/account/settings'
+    },
+    {
+      id: 'reset-password',
+      label: 'Reset Password',
+      icon: KeyRound,
+      href: '/account/reset-password'
     },
     {
       id: 'logout',

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
 import { UserRole } from '@/types';
@@ -23,6 +23,10 @@ export default function LoginForm({ role }: LoginFormProps) {
   });
   const { isAuthenticated, user, login: authLogin } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get return URL from query params
+  const returnUrl = searchParams.get('returnUrl');
 
   // This effect is kept minimal since GoogleLoginButton handles all routing logic
   // It only handles the case where user is already authenticated (e.g., page refresh)
@@ -30,19 +34,23 @@ export default function LoginForm({ role }: LoginFormProps) {
     if (isAuthenticated && user) {
       // This shouldn't normally trigger since GoogleLoginButton handles routing
       // But kept as a safeguard for edge cases (e.g., direct navigation to login while authenticated)
-      if (user.role === 'provider') {
+      let target = '/';
+      
+      // If there's a return URL, use it
+      if (returnUrl) {
+        target = decodeURIComponent(returnUrl);
+      } else if (user.role === 'provider') {
         // Don't redirect if under review - user shouldn't be authenticated in this state
         if (user.isOnboarded === true && user.isReviewed === false) {
           return;
         }
         // Redirect based on onboarding status
-        const target = user.isOnboarded === false ? '/provider-onboarding' : '/provider-management/overview';
-        router.replace(target);
-      } else {
-        router.replace('/');
+        target = user.isOnboarded === false ? '/provider-onboarding' : '/provider-management/overview';
       }
+      
+      router.replace(target);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, returnUrl]);
 
   const handleAuthError = (error: string) => {
     console.error("Auth Error:", error); // Log internally for debugging
@@ -76,14 +84,47 @@ export default function LoginForm({ role }: LoginFormProps) {
 
       // Wait 1.5 seconds to show success, then redirect
       setTimeout(() => {
-        // Handle redirect based on role and user state
+        // If there's a return URL, use it (for customers and providers)
+        if (returnUrl) {
+          router.replace(decodeURIComponent(returnUrl));
+          return;
+        }
+
+        // Provider routing logic (only if no return URL)
         if (role === 'provider') {
-          // For providers, check onboarding status
-          // Note: API response doesn't include isOnboarded/isReviewed, so we'll redirect to onboarding
-          // The onboarding page or provider dashboard will handle validation
-          router.replace('/provider-onboarding');
+          const user = response.user;
+          
+          // Check provider status BEFORE redirecting
+          console.log('🔍 Provider manual login - checking status:', { 
+            isOnboarded: user?.isOnboarded, 
+            isReviewed: user?.isReviewed 
+          });
+          
+          // If onboarded but not reviewed, show error and prevent redirect
+          if (user?.isOnboarded === true && user?.isReviewed === false) {
+            console.log('⏳ Provider listing under review - preventing redirect');
+            setErrorMessage('Your listing is under review. We will notify you once it is approved.');
+            setIsSuccess(false);
+            return;
+          }
+          
+          // If not onboarded, redirect to onboarding flow
+          if (user?.isOnboarded === false) {
+            console.log('📝 Redirecting to provider onboarding');
+            router.replace('/provider-onboarding');
+          }
+          // If onboarded and reviewed, redirect to provider management
+          else if (user?.isOnboarded === true && user?.isReviewed === true) {
+            console.log('✅ Redirecting to provider management');
+            router.replace('/provider-management/overview');
+          }
+          // Fallback to onboarding if status is unclear
+          else {
+            console.log('⚠️ Unclear provider status, redirecting to onboarding');
+            router.replace('/provider-onboarding');
+          }
         } else {
-          // For customers, redirect to home
+          // Customer login - redirect to home page
           router.replace('/');
         }
       }, 1500);

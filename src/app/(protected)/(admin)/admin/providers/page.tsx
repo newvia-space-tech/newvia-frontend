@@ -85,13 +85,13 @@ export default function ProvidersPage() {
     const isActive = !isDeleted;
     return (
       <div className="border border-[#e5e7ea] flex gap-1.5 items-center justify-center px-2.5 py-0.5 rounded-full">
-        <div 
-          className="w-1.5 h-1.5 rounded-full" 
-          style={{ backgroundColor: isActive ? '#1fc16b' : '#e43636' }} 
+        <div
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: isActive ? '#1fc16b' : '#e43636' }}
         />
-        <p 
+        <p
           className="text-sm"
-          style={{ 
+          style={{
             fontFamily: 'Lato, sans-serif',
             fontWeight: 400,
             lineHeight: '20px',
@@ -108,13 +108,13 @@ export default function ProvidersPage() {
     const isPaid = payoutDone === true;
     return (
       <div className="border border-[#e5e7ea] flex gap-1.5 items-center justify-center px-2.5 py-0.5 rounded-full">
-        <div 
-          className="w-1.5 h-1.5 rounded-full" 
-          style={{ backgroundColor: isPaid ? '#1fc16b' : '#e43636' }} 
+        <div
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: isPaid ? '#1fc16b' : '#e43636' }}
         />
-        <p 
+        <p
           className="text-sm"
-          style={{ 
+          style={{
             fontFamily: 'Lato, sans-serif',
             fontWeight: 400,
             lineHeight: '20px',
@@ -158,9 +158,9 @@ export default function ProvidersPage() {
         <div className="sticky top-0 z-10 bg-[#f8f9f8]">
           <div className="flex items-center justify-between pl-16 sm:pl-6 lg:pl-9 pr-4 sm:pr-6 lg:pr-9 py-3">
             <div className="flex flex-col gap-0.5">
-              <h1 
+              <h1
                 className="text-xl font-bold text-black"
-                style={{ 
+                style={{
                   fontFamily: 'Lato, sans-serif',
                   fontWeight: 700,
                   lineHeight: '28px'
@@ -199,7 +199,7 @@ export default function ProvidersPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 outline-none text-sm text-[#9ea5ad]"
-                style={{ 
+                style={{
                   fontFamily: 'Lato, sans-serif',
                   fontWeight: 400,
                   lineHeight: '20px'
@@ -209,11 +209,11 @@ export default function ProvidersPage() {
 
             {/* Table Container with Horizontal Scroll */}
             <div className="relative">
-              <div 
+              <div
                 ref={tableScrollRef}
                 onScroll={handleScroll}
-                className="overflow-x-auto overflow-y-hidden rounded-md" 
-                style={{ 
+                className="overflow-x-auto overflow-y-hidden rounded-md"
+                style={{
                   scrollbarWidth: 'thin',
                   width: '100%'
                 }}
@@ -221,12 +221,12 @@ export default function ProvidersPage() {
                 {/* Table */}
                 <div className="flex flex-col min-w-max">
                   {/* Table Header */}
-                  <div className="bg-[#f8f9f8] flex items-center px-6 py-3 gap-8" style={{ minWidth: '1776px' }}>
+                  <div className="bg-[#f8f9f8] flex items-center px-6 py-3 gap-8" style={{ minWidth: '2200px' }}>
                     {/* Visible columns on initial load - these expand to fill width */}
                     <div className="min-w-[150px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -236,9 +236,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[200px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -248,9 +248,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[80px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -260,9 +260,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[120px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -272,9 +272,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[120px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -284,9 +284,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[110px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -296,9 +296,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="min-w-[110px] flex-1 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -309,9 +309,9 @@ export default function ProvidersPage() {
                     </div>
                     {/* Hidden columns - shown on scroll */}
                     <div className="w-[110px] shrink-0 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -321,9 +321,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="w-[100px] shrink-0 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -333,9 +333,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="w-[120px] shrink-0 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -345,9 +345,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="w-[70px] shrink-0 px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -357,9 +357,9 @@ export default function ProvidersPage() {
                       </p>
                     </div>
                     <div className="w-[50px] shrink-0 flex justify-center px-2">
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -368,10 +368,46 @@ export default function ProvidersPage() {
                         Booking
                       </p>
                     </div>
-                    <div className="w-[90px] shrink-0 px-2">
-                      <p 
+                    <div className="w-[150px] shrink-0 px-2">
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
+                          fontFamily: 'Lato, sans-serif',
+                          fontWeight: 400,
+                          lineHeight: '20px'
+                        }}
+                      >
+                        Account Name
+                      </p>
+                    </div>
+                    <div className="w-[150px] shrink-0 px-2">
+                      <p
+                        className="text-sm text-[#797e84]"
+                        style={{
+                          fontFamily: 'Lato, sans-serif',
+                          fontWeight: 400,
+                          lineHeight: '20px'
+                        }}
+                      >
+                        Account Number
+                      </p>
+                    </div>
+                    <div className="w-[120px] shrink-0 px-2">
+                      <p
+                        className="text-sm text-[#797e84]"
+                        style={{
+                          fontFamily: 'Lato, sans-serif',
+                          fontWeight: 400,
+                          lineHeight: '20px'
+                        }}
+                      >
+                        Bank Name
+                      </p>
+                    </div>
+                    <div className="w-[90px] shrink-0 px-2">
+                      <p
+                        className="text-sm text-[#797e84]"
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -387,16 +423,15 @@ export default function ProvidersPage() {
                     {filteredProviders.map((provider, index) => (
                       <div
                         key={provider.id}
-                        className={`flex items-center px-6 py-3 border-b border-[#e5e7ea] gap-8 ${
-                          index === filteredProviders.length - 1 ? 'border-b-0' : ''
-                        }`}
-                        style={{ minWidth: '1776px' }}
+                        className={`flex items-center px-6 py-3 border-b border-[#e5e7ea] gap-8 ${index === filteredProviders.length - 1 ? 'border-b-0' : ''
+                          }`}
+                        style={{ minWidth: '2200px' }}
                       >
                         {/* Visible columns on initial load - these expand to fill width */}
                         <div className="min-w-[150px] flex-1 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -406,9 +441,9 @@ export default function ProvidersPage() {
                           </p>
                         </div>
                         <div className="flex flex-col min-w-[200px] flex-1 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -421,9 +456,9 @@ export default function ProvidersPage() {
                           {getStatusBadge(provider.is_deleted)}
                         </div>
                         <div className="min-w-[120px] flex-1 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -434,9 +469,9 @@ export default function ProvidersPage() {
                         </div>
                         <div className="min-w-[120px] flex-1 px-2">
                           <div className="bg-[#fffbec] flex items-center justify-center px-3 py-0.5 rounded-full w-fit">
-                            <p 
+                            <p
                               className="text-sm"
-                              style={{ 
+                              style={{
                                 fontFamily: 'Lato, sans-serif',
                                 fontWeight: 400,
                                 lineHeight: '20px',
@@ -448,9 +483,9 @@ export default function ProvidersPage() {
                           </div>
                         </div>
                         <div className="min-w-[110px] flex-1 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -460,9 +495,9 @@ export default function ProvidersPage() {
                           </p>
                         </div>
                         <div className="flex flex-col min-w-[110px] flex-1 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -470,9 +505,9 @@ export default function ProvidersPage() {
                           >
                             {formatCurrency(provider.total_processing_fee)}
                           </p>
-                          <p 
+                          <p
                             className="text-sm text-[#797e84]"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -483,9 +518,9 @@ export default function ProvidersPage() {
                         </div>
                         {/* Hidden columns - shown on scroll */}
                         <div className="w-[110px] shrink-0 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -498,9 +533,9 @@ export default function ProvidersPage() {
                           {getPayoutBadge(provider.payout_done)}
                         </div>
                         <div className="w-[120px] shrink-0 px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
@@ -511,9 +546,9 @@ export default function ProvidersPage() {
                         </div>
                         <div className="flex gap-1.5 items-center w-[70px] shrink-0 px-2">
                           <Star size={13} className="fill-black text-black" />
-                          <p 
+                          <p
                             className="text-sm text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 400,
                               lineHeight: '20px'
@@ -521,9 +556,9 @@ export default function ProvidersPage() {
                           >
                             {provider.average_rating || 0}
                           </p>
-                          <p 
+                          <p
                             className="text-sm text-[#797e84]"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 400,
                               lineHeight: '20px'
@@ -533,15 +568,51 @@ export default function ProvidersPage() {
                           </p>
                         </div>
                         <div className="w-[50px] shrink-0 flex justify-center px-2">
-                          <p 
+                          <p
                             className="text-sm font-medium text-black"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 500,
                               lineHeight: '20px'
                             }}
                           >
                             {provider.total_bookings || 0}
+                          </p>
+                        </div>
+                        <div className="w-[150px] shrink-0 px-2">
+                          <p
+                            className="text-sm font-medium text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 500,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            {provider.account_name || '-'}
+                          </p>
+                        </div>
+                        <div className="w-[150px] shrink-0 px-2">
+                          <p
+                            className="text-sm font-medium text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 500,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            {provider.account_number || '-'}
+                          </p>
+                        </div>
+                        <div className="w-[120px] shrink-0 px-2">
+                          <p
+                            className="text-sm font-medium text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 500,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            {provider.bank_name || '-'}
                           </p>
                         </div>
                         <div className="w-[90px] shrink-0 px-2">
@@ -552,7 +623,7 @@ export default function ProvidersPage() {
                                 setIsSettlePayoutOpen(true);
                               }}
                               className="text-sm font-medium text-[#6290f2] underline hover:no-underline transition-all cursor-pointer"
-                              style={{ 
+                              style={{
                                 fontFamily: 'Lato, sans-serif',
                                 fontWeight: 500,
                                 lineHeight: '20px'
@@ -571,7 +642,7 @@ export default function ProvidersPage() {
               </div>
               {/* Gradient fade indicator on left - only shows after scroll */}
               {showGradient && (
-                <div 
+                <div
                   className="absolute top-0 left-0 h-full w-[100px] pointer-events-none z-10"
                   style={{
                     background: 'linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))'
@@ -583,12 +654,12 @@ export default function ProvidersPage() {
             {/* Loading State */}
             {isLoading && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-[#797e84] text-base"
-                  style={{ 
-                    fontFamily: 'Lato, sans-serif', 
-                    fontWeight: 400, 
-                    lineHeight: '24px' 
+                  style={{
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 400,
+                    lineHeight: '24px'
                   }}
                 >
                   Loading providers...
@@ -599,12 +670,12 @@ export default function ProvidersPage() {
             {/* Error State */}
             {error && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-red-500 text-base"
-                  style={{ 
-                    fontFamily: 'Lato, sans-serif', 
-                    fontWeight: 400, 
-                    lineHeight: '24px' 
+                  style={{
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 400,
+                    lineHeight: '24px'
                   }}
                 >
                   {error instanceof Error ? error.message : 'Failed to load providers'}
@@ -615,12 +686,12 @@ export default function ProvidersPage() {
             {/* Empty State */}
             {!isLoading && !error && filteredProviders.length === 0 && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-[#797e84] text-base"
-                  style={{ 
-                    fontFamily: 'Lato, sans-serif', 
-                    fontWeight: 400, 
-                    lineHeight: '24px' 
+                  style={{
+                    fontFamily: 'Lato, sans-serif',
+                    fontWeight: 400,
+                    lineHeight: '24px'
                   }}
                 >
                   No providers found
@@ -632,9 +703,9 @@ export default function ProvidersPage() {
             {!isLoading && !error && filteredProviders.length > 0 && (
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <div className="flex gap-2 items-center flex-wrap">
-                  <p 
+                  <p
                     className="text-sm text-[#797e84] whitespace-nowrap"
-                    style={{ 
+                    style={{
                       fontFamily: 'Lato, sans-serif',
                       fontWeight: 500,
                       lineHeight: '20px'
@@ -642,9 +713,9 @@ export default function ProvidersPage() {
                   >
                     Showing
                   </p>
-                  <p 
+                  <p
                     className="text-sm font-medium text-black text-center whitespace-nowrap"
-                    style={{ 
+                    style={{
                       fontFamily: 'Lato, sans-serif',
                       fontWeight: 500,
                       lineHeight: '20px'
@@ -652,9 +723,9 @@ export default function ProvidersPage() {
                   >
                     {providersData?.payload?.itemsReceived || 0}
                   </p>
-                  <p 
+                  <p
                     className="text-sm text-[#797e84] whitespace-nowrap"
-                    style={{ 
+                    style={{
                       fontFamily: 'Lato, sans-serif',
                       fontWeight: 500,
                       lineHeight: '20px'
@@ -664,12 +735,11 @@ export default function ProvidersPage() {
                   </p>
                 </div>
                 <div className="flex gap-3 items-center flex-wrap">
-                  <button 
+                  <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={!hasPrevPage}
-                    className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${
-                      hasPrevPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
-                    }`}
+                    className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${hasPrevPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
+                      }`}
                   >
                     <ChevronLeft size={20} className="text-[#797e84]" />
                   </button>
@@ -685,20 +755,19 @@ export default function ProvidersPage() {
                       } else {
                         pageNum = currentPage - 2 + i;
                       }
-                      
+
                       return (
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer ${
-                            currentPage === pageNum
+                          className={`w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer ${currentPage === pageNum
                               ? 'bg-[#6290f2] text-white'
                               : 'text-[#797e84] hover:bg-gray-50'
-                          } transition-colors`}
+                            } transition-colors`}
                         >
-                          <span 
+                          <span
                             className="text-sm"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 400,
                               lineHeight: '20px'
@@ -712,9 +781,9 @@ export default function ProvidersPage() {
                     {totalPages > 5 && currentPage < totalPages - 2 && (
                       <>
                         <div className="w-9 h-9 rounded-lg flex items-center justify-center">
-                          <span 
+                          <span
                             className="text-sm text-[#9ea5ad]"
-                            style={{ 
+                            style={{
                               fontFamily: 'Inter, sans-serif',
                               fontWeight: 500,
                               lineHeight: '21px'
@@ -727,9 +796,9 @@ export default function ProvidersPage() {
                           onClick={() => setCurrentPage(totalPages)}
                           className="w-9 h-9 rounded-lg flex items-center justify-center text-[#797e84] hover:bg-gray-50 transition-colors cursor-pointer"
                         >
-                          <span 
+                          <span
                             className="text-sm"
-                            style={{ 
+                            style={{
                               fontFamily: 'Lato, sans-serif',
                               fontWeight: 400,
                               lineHeight: '20px'
@@ -741,12 +810,11 @@ export default function ProvidersPage() {
                       </>
                     )}
                   </div>
-                  <button 
+                  <button
                     onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                     disabled={!hasNextPage}
-                    className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${
-                      hasNextPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
-                    }`}
+                    className={`border border-[#e5e7ea] rounded-lg w-9 h-9 flex items-center justify-center transition-colors cursor-pointer ${hasNextPage ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'
+                      }`}
                   >
                     <ChevronRight size={20} className="text-[#797e84]" />
                   </button>

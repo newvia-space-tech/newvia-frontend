@@ -135,6 +135,12 @@ export default function BookingPage() {
           
           if (bookingData.step) {
             setCurrentStep(bookingData.step);
+            // Update URL to reflect the step if it's user-details
+            if (bookingData.step === 'user-details') {
+              const currentUrl = new URL(window.location.href);
+              currentUrl.searchParams.set('step', 'user-details');
+              window.history.replaceState({ step: 'user-details' }, '', currentUrl.toString());
+            }
           }
         } else {
           // Business/service mismatch - clear the old booking_data
@@ -199,6 +205,43 @@ export default function BookingPage() {
       return () => clearTimeout(timer);
     }
   }, [searchParams]);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handlePopState = (event: PopStateEvent) => {
+      // Check the current URL to see if step parameter exists
+      const currentUrl = new URL(window.location.href);
+      const stepParam = currentUrl.searchParams.get('step');
+      
+      // If we're on user-details step and URL doesn't have step=user-details, user is going back
+      if (currentStep === 'user-details' && stepParam !== 'user-details') {
+        // Go back to date-time step instead of leaving the booking page
+        setCurrentStep('date-time');
+        saveBookingData('date-time', selectedDate, selectedTime, userDetails);
+        
+        // Ensure URL doesn't have step parameter (in case it was removed by browser)
+        if (stepParam) {
+          currentUrl.searchParams.delete('step');
+          window.history.replaceState({ step: 'date-time' }, '', currentUrl.toString());
+        }
+      } else if (stepParam === 'user-details' && currentStep !== 'user-details') {
+        // If URL has step=user-details but state doesn't match, sync it
+        setCurrentStep('user-details');
+      } else if (!stepParam && currentStep === 'user-details') {
+        // If URL doesn't have step but we're on user-details, go back to date-time
+        setCurrentStep('date-time');
+        saveBookingData('date-time', selectedDate, selectedTime, userDetails);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [currentStep, selectedDate, selectedTime, userDetails]);
 
   // Note: We do NOT clear booking_data on unmount
   // It should only be cleared when:
@@ -447,11 +490,25 @@ export default function BookingPage() {
     // Move to user details step
     setCurrentStep('user-details');
     saveBookingData('user-details', selectedDate, selectedTime, userDetails);
+    
+    // Push a new history entry so browser back goes to date-time step
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('step', 'user-details');
+      window.history.pushState({ step: 'user-details' }, '', currentUrl.toString());
+    }
   };
 
   const handleBackToDateSelection = () => {
     setCurrentStep('date-time');
     saveBookingData('date-time', selectedDate, selectedTime, userDetails);
+    
+    // Replace current history entry to go back to date-time step
+    if (typeof window !== 'undefined') {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('step');
+      window.history.replaceState({ step: 'date-time' }, '', currentUrl.toString());
+    }
   };
 
   const handleUserDetailsChange = (field: string, value: string) => {
@@ -529,7 +586,9 @@ export default function BookingPage() {
 
     if (!user?.id || !authToken) {
       alert('Please log in to continue');
-      router.push('/auth/login/customer');
+      // Include return URL so user can be redirected back after login
+      const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+      router.push(`/auth/login/customer?returnUrl=${returnUrl}`);
       return;
     }
 

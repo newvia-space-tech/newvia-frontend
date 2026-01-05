@@ -23,7 +23,7 @@ import { useBusinessHoursProtected } from '@/hooks/business/useBusinessHoursProt
 import { useAccountDetails } from '@/hooks/business/useAccountDetails';
 import { useStates } from '@/hooks/city/useStates';
 import { editService, addService, deleteService, DeleteServiceRequest } from '@/services/service/service';
-import { editWorkingHours, addAccountDetails, AddAccountDetailsRequest } from '@/services/business/business';
+import { editWorkingHours, addAccountDetails, updateAccountDetails, AddAccountDetailsRequest, UpdateAccountDetailsRequest } from '@/services/business/business';
 import { convertWorkingHoursToApiFormat } from '@/components/provider/EditWorkingHoursModal';
 import type { Service, EditServiceRequest, AddServiceRequest } from '@/types';
 
@@ -186,11 +186,11 @@ export default function ListingPage() {
 
   // Fetch business info from API - only when business-info tab is active
   const { data: businessInfoData, isLoading, error, refetch } = useBusinessInfo(
-    businessId, 
-    userId, 
+    businessId,
+    userId,
     activeTab === 'business-info'
   );
-  
+
   // Fetch categories to map category ID to name - always enabled (used in modals)
   const { data: categories = [] } = useCategories();
 
@@ -198,42 +198,42 @@ export default function ListingPage() {
   const { data: states = [] } = useStates();
 
   // Fetch location availability - only when location-availability tab is active
-  const { 
-    data: locationAvailabilityData, 
-    isLoading: isLoadingLocation, 
+  const {
+    data: locationAvailabilityData,
+    isLoading: isLoadingLocation,
     error: locationError,
-    refetch: refetchLocation 
+    refetch: refetchLocation
   } = useLocationAvailability(businessId, userId, activeTab === 'location-availability');
 
   // Fetch business hours - only when location-availability tab is active
-  const { 
-    data: businessHoursData, 
-    isLoading: isLoadingHours, 
+  const {
+    data: businessHoursData,
+    isLoading: isLoadingHours,
     error: hoursError,
-    refetch: refetchHours 
+    refetch: refetchHours
   } = useBusinessHoursProtected(businessId, activeTab === 'location-availability');
 
   // Fetch services - only when services-pricing tab is active
-  const { 
-    data: servicesData = [], 
-    isLoading: isLoadingServices, 
+  const {
+    data: servicesData = [],
+    isLoading: isLoadingServices,
     error: servicesError,
-    refetch: refetchServices 
+    refetch: refetchServices
   } = useServices(businessId, userId, activeTab === 'services-pricing');
 
   // Fetch business images - only when gallery tab is active
-  const { 
-    data: businessImagesData, 
-    isLoading: isLoadingImages, 
-    error: imagesError 
+  const {
+    data: businessImagesData,
+    isLoading: isLoadingImages,
+    error: imagesError
   } = useBusinessImages(businessId, activeTab === 'gallery');
 
   // Fetch account details - only when payment-account tab is active
-  const { 
-    data: accountDetailsData, 
-    isLoading: isLoadingAccountDetails, 
+  const {
+    data: accountDetailsData,
+    isLoading: isLoadingAccountDetails,
     error: accountDetailsError,
-    refetch: refetchAccountDetails 
+    refetch: refetchAccountDetails
   } = useAccountDetails(businessId, userId, activeTab === 'payment-account');
 
   // Sync tab state with URL when URL changes (browser back/forward navigation)
@@ -283,6 +283,7 @@ export default function ListingPage() {
     accountNumber: '',
     bankName: ''
   });
+  const [isEditingPaymentAccount, setIsEditingPaymentAccount] = useState(false);
   const [accountDetailsErrors, setAccountDetailsErrors] = useState<{
     accountName?: string;
     accountNumber?: string;
@@ -295,7 +296,7 @@ export default function ListingPage() {
       const payload = businessInfoData.payload;
       const categoryId = payload.business_category_id || '';
       const categoryName = getCategoryNameById(categoryId, categories);
-      
+
       setBusinessData({
         businessName: payload.business_name || '',
         categoryId: categoryId,
@@ -329,7 +330,7 @@ export default function ListingPage() {
     if (businessHoursData?.payload?.business_hours) {
       const hours = businessHoursData.payload.business_hours;
       const formattedHours: Record<string, { isOpen: boolean; startTime: string; endTime: string }> = {};
-      
+
       hours.forEach((hour: { day: number; is_open: boolean; start_time: number; end_time: number }) => {
         const dayKey = dayNumberToKey(hour.day);
         if (dayKey) {
@@ -340,7 +341,7 @@ export default function ListingPage() {
           };
         }
       });
-      
+
       setWorkingHoursData(formattedHours);
     }
   }, [businessHoursData]);
@@ -367,6 +368,10 @@ export default function ListingPage() {
 
   const handleWorkingHoursEdit = () => {
     setIsEditWorkingHoursModalOpen(true);
+  };
+
+  const handlePaymentAccountEdit = () => {
+    setIsEditingPaymentAccount(true);
   };
 
   // Mutation for editing working hours
@@ -396,7 +401,7 @@ export default function ListingPage() {
     // Ensure all 7 days are present in the data
     const allDaysData: Record<string, { isOpen: boolean; startTime: string; endTime: string }> = {};
     const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    
+
     dayKeys.forEach(dayKey => {
       // Use provided data if available, otherwise use defaults
       allDaysData[dayKey] = data[dayKey] || {
@@ -405,24 +410,24 @@ export default function ListingPage() {
         endTime: '18:00'
       };
     });
-    
+
     // Convert working hours data to API format (all 7 days)
     const workingHoursApiFormat = convertWorkingHoursToApiFormat(allDaysData);
-    
+
     // Prepare payload with all days (as required by API)
     const payload = {
       business_id: businessId,
       user_id: userId,
       working_hours: workingHoursApiFormat
     };
-    
+
     // Debug: Log the payload being sent
     console.log('Sending working hours payload:', JSON.stringify(payload, null, 2));
     console.log('Working hours array:', workingHoursApiFormat);
-    
+
     // Call the mutation
     editWorkingHoursMutation.mutate(payload);
-    
+
     // Update local state immediately for better UX
     setWorkingHoursData(allDaysData);
   };
@@ -471,7 +476,7 @@ export default function ListingPage() {
       queryClient.setQueryData<Service[]>(['services', businessId, userId], (oldData) => {
         if (!oldData) return oldData;
         // Replace the edited service with the updated one from the API response
-        return oldData.map(service => 
+        return oldData.map(service =>
           service.id === response.payload.id ? response.payload : service
         );
       });
@@ -543,11 +548,11 @@ export default function ListingPage() {
   // Validation function for account details
   const validateAccountDetails = (): boolean => {
     const errors: { accountName?: string; accountNumber?: string; bankName?: string } = {};
-    
+
     if (!paymentAccountData.accountName.trim()) {
       errors.accountName = 'Account name is required';
     }
-    
+
     if (!paymentAccountData.accountNumber.trim()) {
       errors.accountNumber = 'Account number is required';
     } else if (!/^\d+$/.test(paymentAccountData.accountNumber.trim())) {
@@ -555,13 +560,13 @@ export default function ListingPage() {
     } else if (paymentAccountData.accountNumber.trim().length < 8) {
       errors.accountNumber = 'Account number must be at least 8 digits';
     }
-    
+
     if (!paymentAccountData.bankName.trim()) {
       errors.bankName = 'Bank name is required';
     } else if (paymentAccountData.bankName.trim().length < 2) {
       errors.bankName = 'Bank name must be at least 2 characters';
     }
-    
+
     setAccountDetailsErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -569,7 +574,7 @@ export default function ListingPage() {
   // Validate individual field
   const validateField = (fieldName: 'accountName' | 'accountNumber' | 'bankName', value: string) => {
     const errors = { ...accountDetailsErrors };
-    
+
     if (fieldName === 'accountName') {
       if (!value.trim()) {
         errors.accountName = 'Account name is required';
@@ -595,7 +600,7 @@ export default function ListingPage() {
         delete errors.bankName;
       }
     }
-    
+
     setAccountDetailsErrors(errors);
   };
 
@@ -615,7 +620,26 @@ export default function ListingPage() {
     },
     onError: (error: Error) => {
       console.error('Failed to add account details:', error);
-      alert(`Failed to save account details: ${error.message}`);
+    },
+  });
+
+  // Mutation for updating account details
+  const updateAccountDetailsMutation = useMutation({
+    mutationFn: (payload: UpdateAccountDetailsRequest) => {
+      if (!authToken) {
+        throw new Error('Authentication token not available');
+      }
+      return updateAccountDetails(payload, authToken);
+    },
+    onSuccess: () => {
+      // Refetch account details to get the updated data
+      queryClient.invalidateQueries({ queryKey: ['accountDetails', businessId, userId] });
+      refetchAccountDetails();
+      setAccountDetailsErrors({});
+      setIsEditingPaymentAccount(false);
+    },
+    onError: (error: Error) => {
+      console.error('Failed to update account details:', error);
     },
   });
 
@@ -624,20 +648,34 @@ export default function ListingPage() {
       return;
     }
 
-    if (!businessId || !userId) {
-      alert('Business ID or User ID is missing');
+    if (!businessId) {
       return;
     }
 
-    const payload: AddAccountDetailsRequest = {
-      user_id: userId,
-      business_id: businessId,
-      account_name: paymentAccountData.accountName.trim(),
-      account_number: paymentAccountData.accountNumber.trim(),
-      bank_name: paymentAccountData.bankName.trim(),
-    };
-
-    addAccountDetailsMutation.mutate(payload);
+    // Check if we're editing existing account or adding new one
+    if (isEditingPaymentAccount) {
+      // Update existing account (PATCH)
+      const payload: UpdateAccountDetailsRequest = {
+        business_id: businessId,
+        account_name: paymentAccountData.accountName.trim(),
+        account_number: paymentAccountData.accountNumber.trim(),
+        bank_name: paymentAccountData.bankName.trim(),
+      };
+      updateAccountDetailsMutation.mutate(payload);
+    } else {
+      // Add new account (POST)
+      if (!userId) {
+        return;
+      }
+      const payload: AddAccountDetailsRequest = {
+        user_id: userId,
+        business_id: businessId,
+        account_name: paymentAccountData.accountName.trim(),
+        account_number: paymentAccountData.accountNumber.trim(),
+        bank_name: paymentAccountData.bankName.trim(),
+      };
+      addAccountDetailsMutation.mutate(payload);
+    }
   };
 
   const handleServiceSave = (service: { id: string; name: string; description: string; price: number; duration: number }) => {
@@ -677,9 +715,9 @@ export default function ListingPage() {
         {/* Header */}
         <div className="sticky top-0 z-10 bg-[#f8f9f8]">
           <div className="flex items-center pl-16 sm:pl-6 lg:pl-9 pr-4 sm:pr-6 lg:pr-9 py-3">
-            <h1 
+            <h1
               className="text-lg sm:text-xl font-bold text-black"
-              style={{ 
+              style={{
                 fontFamily: 'Lato, sans-serif',
                 fontWeight: 700,
                 lineHeight: '28px'
@@ -700,12 +738,11 @@ export default function ListingPage() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${
-                    isActive
-                      ? 'text-black'
-                      : 'text-[#797e84] hover:text-black'
-                  }`}
-                  style={{ 
+                  className={`px-3 sm:px-4 py-2 sm:py-3 transition-colors relative min-h-[36px] flex-shrink-0 whitespace-nowrap text-[13px] sm:text-[14px] cursor-pointer ${isActive
+                    ? 'text-black'
+                    : 'text-[#797e84] hover:text-black'
+                    }`}
+                  style={{
                     fontFamily: 'Lato, sans-serif',
                     fontWeight: isActive ? 500 : 400,
                     lineHeight: '20px'
@@ -728,9 +765,9 @@ export default function ListingPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                   <div className="flex gap-1.5 items-center">
                     <Store size={20} className="text-black" />
-                    <h2 
+                    <h2
                       className="text-base font-semibold text-black"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 600,
                         lineHeight: '24px'
@@ -745,9 +782,9 @@ export default function ListingPage() {
                     className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <Pencil size={18} className="text-black" />
-                    <span 
+                    <span
                       className="text-base text-black"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 400,
                         lineHeight: '24px'
@@ -763,9 +800,9 @@ export default function ListingPage() {
                   <div className="flex items-center justify-center py-12">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-10 h-10 border-4 border-[#e5e7ea] border-t-[#6290f2] rounded-full animate-spin"></div>
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -784,9 +821,9 @@ export default function ListingPage() {
                       <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
                         <AlertCircle size={24} className="text-red-500" />
                       </div>
-                      <p 
+                      <p
                         className="text-sm text-red-600 text-center"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           lineHeight: '20px'
@@ -797,7 +834,7 @@ export default function ListingPage() {
                       <button
                         onClick={() => refetch()}
                         className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           fontSize: '14px'
@@ -811,150 +848,150 @@ export default function ListingPage() {
 
                 {/* Business Info Fields */}
                 {!isLoading && !error && (
-                <div className="flex flex-col gap-4 sm:gap-6">
-                  {/* First Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <div className="flex flex-col gap-2">
-                      <label 
-                        className="text-sm text-[#797e84]"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '20px'
-                        }}
-                      >
-                        Business Name
-                      </label>
-                      <div 
-                        className="text-base text-black"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '24px'
-                        }}
-                      >
-                        {businessData.businessName}
+                  <div className="flex flex-col gap-4 sm:gap-6">
+                    {/* First Row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                      <div className="flex flex-col gap-2">
+                        <label
+                          className="text-sm text-[#797e84]"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '20px'
+                          }}
+                        >
+                          Business Name
+                        </label>
+                        <div
+                          className="text-base text-black"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '24px'
+                          }}
+                        >
+                          {businessData.businessName}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label
+                          className="text-sm text-[#797e84]"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '20px'
+                          }}
+                        >
+                          Category
+                        </label>
+                        <div
+                          className="text-base text-black"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '24px'
+                          }}
+                        >
+                          {businessData.categoryName || 'Not specified'}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label
+                          className="text-sm text-[#797e84]"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '20px'
+                          }}
+                        >
+                          Business Phone Number
+                        </label>
+                        <div
+                          className="text-base text-black"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '24px'
+                          }}
+                        >
+                          {businessData.phoneNumber}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label
+                          className="text-sm text-[#797e84]"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '20px'
+                          }}
+                        >
+                          Social Media
+                        </label>
+                        <div
+                          className="text-base text-black"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '24px'
+                          }}
+                        >
+                          {businessData.socialMedia}
+                        </div>
                       </div>
                     </div>
 
+                    {/* Business Registration Number */}
                     <div className="flex flex-col gap-2">
-                      <label 
+                      <label
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
                         }}
                       >
-                        Category
+                        Business Registration Number
                       </label>
-                      <div 
+                      <div
                         className="text-base text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '24px'
                         }}
                       >
-                        {businessData.categoryName || 'Not specified'}
+                        {businessData.registrationNumber}
                       </div>
                     </div>
 
+                    {/* Description */}
                     <div className="flex flex-col gap-2">
-                      <label 
+                      <label
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
                         }}
                       >
-                        Business Phone Number
+                        Description
                       </label>
-                      <div 
+                      <div
                         className="text-base text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '24px'
                         }}
                       >
-                        {businessData.phoneNumber}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <label 
-                        className="text-sm text-[#797e84]"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '20px'
-                        }}
-                      >
-                        Social Media
-                      </label>
-                      <div 
-                        className="text-base text-black"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '24px'
-                        }}
-                      >
-                        {businessData.socialMedia}
+                        {businessData.description}
                       </div>
                     </div>
                   </div>
-
-                  {/* Business Registration Number */}
-                  <div className="flex flex-col gap-2">
-                    <label 
-                      className="text-sm text-[#797e84]"
-                      style={{ 
-                        fontFamily: 'Lato, sans-serif',
-                        fontWeight: 400,
-                        lineHeight: '20px'
-                      }}
-                    >
-                      Business Registration Number
-                    </label>
-                    <div 
-                      className="text-base text-black"
-                      style={{ 
-                        fontFamily: 'Lato, sans-serif',
-                        fontWeight: 400,
-                        lineHeight: '24px'
-                      }}
-                    >
-                      {businessData.registrationNumber}
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <div className="flex flex-col gap-2">
-                    <label 
-                      className="text-sm text-[#797e84]"
-                      style={{ 
-                        fontFamily: 'Lato, sans-serif',
-                        fontWeight: 400,
-                        lineHeight: '20px'
-                      }}
-                    >
-                      Description
-                    </label>
-                    <div 
-                      className="text-base text-black"
-                      style={{ 
-                        fontFamily: 'Lato, sans-serif',
-                        fontWeight: 400,
-                        lineHeight: '24px'
-                      }}
-                    >
-                      {businessData.description}
-                    </div>
-                  </div>
-                </div>
                 )}
 
                 {/* Edit Business Info Modal */}
@@ -983,9 +1020,9 @@ export default function ListingPage() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                     <div className="flex gap-1.5 items-center">
                       <MapPin size={20} className="text-black" />
-                      <h2 
+                      <h2
                         className="text-base font-semibold text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 600,
                           lineHeight: '24px'
@@ -1000,9 +1037,9 @@ export default function ListingPage() {
                       className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <Pencil size={18} className="text-black" />
-                      <span 
+                      <span
                         className="text-base text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '24px'
@@ -1018,9 +1055,9 @@ export default function ListingPage() {
                     <div className="flex items-center justify-center py-12">
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-10 h-10 border-4 border-[#e5e7ea] border-t-[#6290f2] rounded-full animate-spin"></div>
-                        <p 
+                        <p
                           className="text-sm text-[#797e84]"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 400,
                             lineHeight: '20px'
@@ -1039,9 +1076,9 @@ export default function ListingPage() {
                         <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
                           <AlertCircle size={24} className="text-red-500" />
                         </div>
-                        <p 
+                        <p
                           className="text-sm text-red-600 text-center"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
                             lineHeight: '20px'
@@ -1052,7 +1089,7 @@ export default function ListingPage() {
                         <button
                           onClick={() => refetchLocation()}
                           className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
                             fontSize: '14px'
@@ -1066,103 +1103,103 @@ export default function ListingPage() {
 
                   {/* Location Data */}
                   {!isLoadingLocation && !locationError && (
-                  <div className="flex flex-col gap-6">
-                    {/* Address */}
-                    <div className="flex flex-col gap-2">
-                      <label 
-                        className="text-sm text-[#797e84]"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '20px'
-                        }}
-                      >
-                        Address
-                      </label>
-                      <div 
-                        className="text-base text-black"
-                        style={{ 
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '24px'
-                        }}
-                      >
-                        {locationData.address}
+                    <div className="flex flex-col gap-6">
+                      {/* Address */}
+                      <div className="flex flex-col gap-2">
+                        <label
+                          className="text-sm text-[#797e84]"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '20px'
+                          }}
+                        >
+                          Address
+                        </label>
+                        <div
+                          className="text-base text-black"
+                          style={{
+                            fontFamily: 'Lato, sans-serif',
+                            fontWeight: 400,
+                            lineHeight: '24px'
+                          }}
+                        >
+                          {locationData.address}
+                        </div>
+                      </div>
+
+                      {/* City, State, Postal Code */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                        <div className="flex flex-col gap-2">
+                          <label
+                            className="text-sm text-[#797e84]"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            City
+                          </label>
+                          <div
+                            className="text-base text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '24px'
+                            }}
+                          >
+                            {locationData.cityName || 'Not specified'}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <label
+                            className="text-sm text-[#797e84]"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            State
+                          </label>
+                          <div
+                            className="text-base text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '24px'
+                            }}
+                          >
+                            {locationData.stateName || 'Not specified'}
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <label
+                            className="text-sm text-[#797e84]"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '20px'
+                            }}
+                          >
+                            Postal Code
+                          </label>
+                          <div
+                            className="text-base text-black"
+                            style={{
+                              fontFamily: 'Lato, sans-serif',
+                              fontWeight: 400,
+                              lineHeight: '24px'
+                            }}
+                          >
+                            {locationData.postalCode}
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    {/* City, State, Postal Code */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
-                      <div className="flex flex-col gap-2">
-                        <label 
-                          className="text-sm text-[#797e84]"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '20px'
-                          }}
-                        >
-                          City
-                        </label>
-                        <div 
-                          className="text-base text-black"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '24px'
-                          }}
-                        >
-                          {locationData.cityName || 'Not specified'}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <label 
-                          className="text-sm text-[#797e84]"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '20px'
-                          }}
-                        >
-                          State
-                        </label>
-                        <div 
-                          className="text-base text-black"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '24px'
-                          }}
-                        >
-                          {locationData.stateName || 'Not specified'}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <label 
-                          className="text-sm text-[#797e84]"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '20px'
-                          }}
-                        >
-                          Postal Code
-                        </label>
-                        <div 
-                          className="text-base text-black"
-                          style={{ 
-                            fontFamily: 'Lato, sans-serif',
-                            fontWeight: 400,
-                            lineHeight: '24px'
-                          }}
-                        >
-                          {locationData.postalCode}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   )}
 
                   {/* Edit Location Modal */}
@@ -1186,9 +1223,9 @@ export default function ListingPage() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                     <div className="flex gap-1.5 items-center">
                       <Calendar size={20} className="text-black" />
-                      <h2 
+                      <h2
                         className="text-base font-semibold text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 600,
                           lineHeight: '24px'
@@ -1203,9 +1240,9 @@ export default function ListingPage() {
                       className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <Pencil size={18} className="text-black" />
-                      <span 
+                      <span
                         className="text-base text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '24px'
@@ -1221,9 +1258,9 @@ export default function ListingPage() {
                     <div className="flex items-center justify-center py-12">
                       <div className="flex flex-col items-center gap-3">
                         <div className="w-10 h-10 border-4 border-[#e5e7ea] border-t-[#6290f2] rounded-full animate-spin"></div>
-                        <p 
+                        <p
                           className="text-sm text-[#797e84]"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 400,
                             lineHeight: '20px'
@@ -1242,9 +1279,9 @@ export default function ListingPage() {
                         <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
                           <AlertCircle size={24} className="text-red-500" />
                         </div>
-                        <p 
+                        <p
                           className="text-sm text-red-600 text-center"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
                             lineHeight: '20px'
@@ -1255,7 +1292,7 @@ export default function ListingPage() {
                         <button
                           onClick={() => refetchHours()}
                           className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
                             fontSize: '14px'
@@ -1269,80 +1306,80 @@ export default function ListingPage() {
 
                   {/* Working Hours Data */}
                   {!isLoadingHours && !hoursError && (
-                  <div className="flex flex-col gap-0">
-            <label
-              className="text-sm text-[#797e84] mb-4"
-              style={{
-                fontFamily: 'Lato, sans-serif',
-                fontWeight: 400,
-                lineHeight: '20px'
-              }}
-            >
-              Working Hours
-            </label>
-            <div className="flex flex-col gap-0">
-              {daysDisplayOrder.map((day, index) => {
-                const dayKey = dayKeyMap[day];
-                const schedule = workingHoursData[dayKey] || { isOpen: false, startTime: '09:00', endTime: '18:00' };
-                const displayTime = formatWorkingHoursDisplay(schedule);
-                
-                // Skip if no data available yet
-                if (Object.keys(workingHoursData).length === 0) {
-                  return null;
-                }
-                
-                return (
-                  <div key={day}>
-                    <div className="flex items-center justify-between py-3">
-                      <p
-                        className="text-base text-black w-[100px]"
+                    <div className="flex flex-col gap-0">
+                      <label
+                        className="text-sm text-[#797e84] mb-4"
                         style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
-                          lineHeight: '24px'
+                          lineHeight: '20px'
                         }}
                       >
-                        {day}
-                      </p>
-                      <p
-                        className="text-base text-[#797e84]"
-                        style={{
-                          fontFamily: 'Lato, sans-serif',
-                          fontWeight: 400,
-                          lineHeight: '24px'
-                        }}
-                      >
-                        {displayTime}
-                      </p>
-                    </div>
-                    {index < daysDisplayOrder.length - 1 && (
-                      <div className="h-px bg-gray-200" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          )}
+                        Working Hours
+                      </label>
+                      <div className="flex flex-col gap-0">
+                        {daysDisplayOrder.map((day, index) => {
+                          const dayKey = dayKeyMap[day];
+                          const schedule = workingHoursData[dayKey] || { isOpen: false, startTime: '09:00', endTime: '18:00' };
+                          const displayTime = formatWorkingHoursDisplay(schedule);
 
-          {/* Edit Working Hours Modal */}
-          <EditWorkingHoursModal
-            isOpen={isEditWorkingHoursModalOpen}
-            onClose={() => setIsEditWorkingHoursModalOpen(false)}
-            onSave={handleSaveWorkingHours}
-            initialData={workingHoursData}
-            isLoading={editWorkingHoursMutation.isPending}
-          />
-        </div>
+                          // Skip if no data available yet
+                          if (Object.keys(workingHoursData).length === 0) {
+                            return null;
+                          }
+
+                          return (
+                            <div key={day}>
+                              <div className="flex items-center justify-between py-3">
+                                <p
+                                  className="text-base text-black w-[100px]"
+                                  style={{
+                                    fontFamily: 'Lato, sans-serif',
+                                    fontWeight: 400,
+                                    lineHeight: '24px'
+                                  }}
+                                >
+                                  {day}
+                                </p>
+                                <p
+                                  className="text-base text-[#797e84]"
+                                  style={{
+                                    fontFamily: 'Lato, sans-serif',
+                                    fontWeight: 400,
+                                    lineHeight: '24px'
+                                  }}
+                                >
+                                  {displayTime}
+                                </p>
+                              </div>
+                              {index < daysDisplayOrder.length - 1 && (
+                                <div className="h-px bg-gray-200" />
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Edit Working Hours Modal */}
+                  <EditWorkingHoursModal
+                    isOpen={isEditWorkingHoursModalOpen}
+                    onClose={() => setIsEditWorkingHoursModalOpen(false)}
+                    onSave={handleSaveWorkingHours}
+                    initialData={workingHoursData}
+                    isLoading={editWorkingHoursMutation.isPending}
+                  />
+                </div>
 
                 {/* Online Consultancy Toggle */}
                 <div className="bg-white rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
                   <div className="flex flex-col gap-1">
                     <div className="flex gap-1.5 items-center">
                       <Video size={20} className="text-black" />
-                      <h3 
+                      <h3
                         className="text-base font-semibold text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 600,
                           lineHeight: '24px'
@@ -1351,9 +1388,9 @@ export default function ListingPage() {
                         Free Online Consultancy Available
                       </h3>
                     </div>
-                    <p 
+                    <p
                       className="text-base text-[#797e84]"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 400,
                         lineHeight: '24px'
@@ -1364,14 +1401,12 @@ export default function ListingPage() {
                   </div>
                   <button
                     onClick={() => setIsOnlineConsultancyEnabled(!isOnlineConsultancyEnabled)}
-                    className={`relative inline-flex h-6 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                      isOnlineConsultancyEnabled ? 'bg-[#6290f2]' : 'bg-gray-300'
-                    }`}
+                    className={`relative inline-flex h-6 w-9 items-center rounded-full transition-colors cursor-pointer ${isOnlineConsultancyEnabled ? 'bg-[#6290f2]' : 'bg-gray-300'
+                      }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        isOnlineConsultancyEnabled ? 'translate-x-4' : 'translate-x-1'
-                      }`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isOnlineConsultancyEnabled ? 'translate-x-4' : 'translate-x-1'
+                        }`}
                     />
                   </button>
                 </div>
@@ -1383,9 +1418,9 @@ export default function ListingPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                   <div className="flex gap-1.5 items-center">
                     <Tag size={20} className="text-black" />
-                    <h2 
+                    <h2
                       className="text-base font-semibold text-black"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 600,
                         lineHeight: '24px'
@@ -1399,9 +1434,9 @@ export default function ListingPage() {
                     className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <Plus size={18} className="text-black" />
-                    <span 
+                    <span
                       className="text-base text-black"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 400,
                         lineHeight: '24px'
@@ -1417,9 +1452,9 @@ export default function ListingPage() {
                   <div className="flex items-center justify-center py-12">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-10 h-10 border-4 border-[#e5e7ea] border-t-[#6290f2] rounded-full animate-spin"></div>
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -1438,9 +1473,9 @@ export default function ListingPage() {
                       <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
                         <AlertCircle size={24} className="text-red-500" />
                       </div>
-                      <p 
+                      <p
                         className="text-sm text-red-600 text-center"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           lineHeight: '20px'
@@ -1451,7 +1486,7 @@ export default function ListingPage() {
                       <button
                         onClick={() => refetchServices()}
                         className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           fontSize: '14px'
@@ -1468,9 +1503,9 @@ export default function ListingPage() {
                   <div className="flex flex-col gap-5">
                     {servicesData.length === 0 ? (
                       <div className="flex items-center justify-center py-12">
-                        <p 
+                        <p
                           className="text-base text-[#797e84]"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 400,
                             lineHeight: '24px'
@@ -1481,84 +1516,84 @@ export default function ListingPage() {
                       </div>
                     ) : (
                       servicesData.map((service, index) => (
-                    <div key={service.id}>
-                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start pb-4 sm:pb-5">
-                        <div className="flex-1 flex flex-col gap-3">
-                          <div className="flex flex-col gap-1">
-                            <h3 
-                              className="text-base font-semibold text-black"
-                              style={{ 
-                                fontFamily: 'Lato, sans-serif',
-                                fontWeight: 600,
-                                lineHeight: '24px'
-                              }}
-                            >
-                              {service.name}
-                            </h3>
-                            {service.description && (
-                              <p 
-                                className="text-base text-[#797e84]"
-                                style={{ 
-                                  fontFamily: 'Lato, sans-serif',
-                                  fontWeight: 400,
-                                  lineHeight: '24px'
-                                }}
-                              >
-                                {service.description}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="flex gap-2 items-center">
-                              <Clock size={18} className="text-[#797e84]" />
-                              <p 
-                                className="text-base text-[#797e84]"
-                                style={{ 
-                                  fontFamily: 'Lato, sans-serif',
-                                  fontWeight: 400,
-                                  lineHeight: '24px'
-                                }}
-                              >
-                                {formatDuration(service.duration_minutes)}
-                              </p>
+                        <div key={service.id}>
+                          <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 items-start pb-4 sm:pb-5">
+                            <div className="flex-1 flex flex-col gap-3">
+                              <div className="flex flex-col gap-1">
+                                <h3
+                                  className="text-base font-semibold text-black"
+                                  style={{
+                                    fontFamily: 'Lato, sans-serif',
+                                    fontWeight: 600,
+                                    lineHeight: '24px'
+                                  }}
+                                >
+                                  {service.name}
+                                </h3>
+                                {service.description && (
+                                  <p
+                                    className="text-base text-[#797e84]"
+                                    style={{
+                                      fontFamily: 'Lato, sans-serif',
+                                      fontWeight: 400,
+                                      lineHeight: '24px'
+                                    }}
+                                  >
+                                    {service.description}
+                                  </p>
+                                )}
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <div className="flex gap-2 items-center">
+                                  <Clock size={18} className="text-[#797e84]" />
+                                  <p
+                                    className="text-base text-[#797e84]"
+                                    style={{
+                                      fontFamily: 'Lato, sans-serif',
+                                      fontWeight: 400,
+                                      lineHeight: '24px'
+                                    }}
+                                  >
+                                    {formatDuration(service.duration_minutes)}
+                                  </p>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                  <Tag size={18} className="text-[#797e84]" />
+                                  <p
+                                    className="text-base text-[#797e84]"
+                                    style={{
+                                      fontFamily: 'Lato, sans-serif',
+                                      fontWeight: 400,
+                                      lineHeight: '24px'
+                                    }}
+                                  >
+                                    {formatPrice(service.price)}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                             <div className="flex gap-2 items-center">
-                              <Tag size={18} className="text-[#797e84]" />
-                              <p 
-                                className="text-base text-[#797e84]"
-                                style={{ 
-                                  fontFamily: 'Lato, sans-serif',
-                                  fontWeight: 400,
-                                  lineHeight: '24px'
-                                }}
+                              <button
+                                onClick={() => handleEditService(service)}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                                title="Edit service"
                               >
-                                {formatPrice(service.price)}
-                              </p>
+                                <Pencil size={20} className="text-black" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteService(service.id)}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                                title="Delete service"
+                              >
+                                <Trash2 size={20} className="text-black" />
+                              </button>
                             </div>
                           </div>
+                          {index < servicesData.length - 1 && (
+                            <div className="h-px bg-gray-200" />
+                          )}
                         </div>
-                        <div className="flex gap-2 items-center">
-                          <button
-                            onClick={() => handleEditService(service)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                            title="Edit service"
-                          >
-                            <Pencil size={20} className="text-black" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteService(service.id)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                            title="Delete service"
-                          >
-                            <Trash2 size={20} className="text-black" />
-                          </button>
-                        </div>
-                      </div>
-                      {index < servicesData.length - 1 && (
-                        <div className="h-px bg-gray-200" />
-                      )}
-                    </div>
-                    ))
+                      ))
                     )}
                   </div>
                 )}
@@ -1606,9 +1641,9 @@ export default function ListingPage() {
                   <div className="flex items-center justify-between w-full">
                     <div className="flex gap-1.5 items-center">
                       <ImageIcon className="w-5 h-5 text-black" />
-                      <h2 
+                      <h2
                         className="text-base font-semibold text-black"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 600,
                           lineHeight: '24px'
@@ -1620,7 +1655,7 @@ export default function ListingPage() {
                     <button
                       onClick={() => setIsEditGalleryModalOpen(true)}
                       className="flex items-center gap-2 px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 400,
                         lineHeight: '24px',
@@ -1655,7 +1690,7 @@ export default function ListingPage() {
                     }
 
                     return (
-                      <div 
+                      <div
                         className="flex flex-wrap gap-4"
                       >
                         {images.map((imageItem, index) => (
@@ -1687,9 +1722,9 @@ export default function ListingPage() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                   <div className="flex gap-1.5 items-center">
                     <CreditCard size={20} className="text-black" />
-                    <h2 
+                    <h2
                       className="text-base font-semibold text-black"
-                      style={{ 
+                      style={{
                         fontFamily: 'Lato, sans-serif',
                         fontWeight: 600,
                         lineHeight: '24px'
@@ -1698,6 +1733,26 @@ export default function ListingPage() {
                       Payment Account
                     </h2>
                   </div>
+                  {/* Show edit button only when account exists and not in edit mode */}
+                  {!areAccountFieldsEmpty() && !isEditingPaymentAccount && (
+                    <button
+                      onClick={handlePaymentAccountEdit}
+                      disabled={isLoadingAccountDetails || !!accountDetailsError}
+                      className="flex gap-2 items-center px-4 py-1.5 border border-[#e5e7ea] rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      <Pencil size={18} className="text-black" />
+                      <span
+                        className="text-base text-black"
+                        style={{
+                          fontFamily: 'Lato, sans-serif',
+                          fontWeight: 400,
+                          lineHeight: '24px'
+                        }}
+                      >
+                        Edit
+                      </span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Loading State */}
@@ -1705,9 +1760,9 @@ export default function ListingPage() {
                   <div className="flex items-center justify-center py-12">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-10 h-10 border-4 border-[#e5e7ea] border-t-[#6290f2] rounded-full animate-spin"></div>
-                      <p 
+                      <p
                         className="text-sm text-[#797e84]"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 400,
                           lineHeight: '20px'
@@ -1726,9 +1781,9 @@ export default function ListingPage() {
                       <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-50">
                         <AlertCircle size={24} className="text-red-500" />
                       </div>
-                      <p 
+                      <p
                         className="text-sm text-red-600 text-center"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           lineHeight: '20px'
@@ -1739,7 +1794,7 @@ export default function ListingPage() {
                       <button
                         onClick={() => refetchAccountDetails()}
                         className="px-4 py-2 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors cursor-pointer"
-                        style={{ 
+                        style={{
                           fontFamily: 'Lato, sans-serif',
                           fontWeight: 500,
                           fontSize: '14px'
@@ -1767,15 +1822,15 @@ export default function ListingPage() {
                           }
                         }}
                         onBlur={() => {
-                          if (isAccountDetailsEditable) {
+                          if (isAccountDetailsEditable || isEditingPaymentAccount) {
                             validateField('accountName', paymentAccountData.accountName);
                           }
                         }}
                         placeholder="Enter"
                         required
                         className="flex-1"
-                        disabled={!isAccountDetailsEditable}
-                        readOnly={!isAccountDetailsEditable}
+                        disabled={!isAccountDetailsEditable && !isEditingPaymentAccount}
+                        readOnly={!isAccountDetailsEditable && !isEditingPaymentAccount}
                         error={accountDetailsErrors.accountName}
                       />
                       <FormInput
@@ -1792,15 +1847,15 @@ export default function ListingPage() {
                           }
                         }}
                         onBlur={() => {
-                          if (isAccountDetailsEditable) {
+                          if (isAccountDetailsEditable || isEditingPaymentAccount) {
                             validateField('accountNumber', paymentAccountData.accountNumber);
                           }
                         }}
                         placeholder="Enter"
                         required
                         className="flex-1"
-                        disabled={!isAccountDetailsEditable}
-                        readOnly={!isAccountDetailsEditable}
+                        disabled={!isAccountDetailsEditable && !isEditingPaymentAccount}
+                        readOnly={!isAccountDetailsEditable && !isEditingPaymentAccount}
                         error={accountDetailsErrors.accountNumber}
                       />
                       <FormInput
@@ -1815,35 +1870,41 @@ export default function ListingPage() {
                           }
                         }}
                         onBlur={() => {
-                          if (isAccountDetailsEditable) {
+                          if (isAccountDetailsEditable || isEditingPaymentAccount) {
                             validateField('bankName', paymentAccountData.bankName);
                           }
                         }}
                         placeholder="Enter"
                         required
                         className="flex-1"
-                        disabled={!isAccountDetailsEditable}
-                        readOnly={!isAccountDetailsEditable}
+                        disabled={!isAccountDetailsEditable && !isEditingPaymentAccount}
+                        readOnly={!isAccountDetailsEditable && !isEditingPaymentAccount}
                         error={accountDetailsErrors.bankName}
                       />
                     </div>
 
-                    {/* Save Button - Only show when fields are editable */}
-                    {isAccountDetailsEditable && (
-                      <div className="flex justify-end mt-2">
+                    {/* Save Button - Show when fields are editable (new account) or in edit mode */}
+                    {(isAccountDetailsEditable || isEditingPaymentAccount) && (
+                      <div className="flex flex-col items-end gap-2 mt-2">
                         <button
                           onClick={handleSaveAccountDetails}
-                          disabled={addAccountDetailsMutation.isPending}
+                          disabled={addAccountDetailsMutation.isPending || updateAccountDetailsMutation.isPending}
                           className="px-6 py-2.5 bg-[#6290f2] text-white rounded-lg hover:bg-[#5580e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] cursor-pointer"
-                          style={{ 
+                          style={{
                             fontFamily: 'Lato, sans-serif',
                             fontWeight: 500,
                             fontSize: '14px',
                             lineHeight: '20px'
                           }}
                         >
-                          {addAccountDetailsMutation.isPending ? 'Saving...' : 'Save'}
+                          {addAccountDetailsMutation.isPending || updateAccountDetailsMutation.isPending ? 'Saving...' : 'Save'}
                         </button>
+
+                        {(addAccountDetailsMutation.isError || updateAccountDetailsMutation.isError) && (
+                          <p className="text-sm text-red-600" style={{ fontFamily: 'Lato, sans-serif' }}>
+                            Failed to edit
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
