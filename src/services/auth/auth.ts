@@ -94,6 +94,10 @@ export const login = async (loginData: LoginRequest): Promise<LoginResponse> => 
       firstName: data.payload.user.first_name,
       lastName: data.payload.user.last_name,
       createdAt: data.payload.user.created_at,
+      // Provider-specific fields (only present for provider role)
+      businessId: data.payload.business_id,
+      isReviewed: data.payload.is_reviewed,
+      isOnboarded: data.payload.is_onboarded,
     }
   };
 };

@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { useTodayDiscounts } from '@/hooks/discount/useTodayDiscounts';
 import { useRef, useState, useEffect } from 'react';
 import type { Discount } from '@/types';
@@ -81,7 +83,22 @@ function CardCountdown({ validTill }: { validTill: number }) {
 
 export default function DiscountsSection() {
   const { data: discounts, isLoading, error } = useTodayDiscounts();
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Handle Book Now click - check if user is authenticated
+  const handleBookNowClick = (e: React.MouseEvent, businessId: string, serviceId: string) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      // Redirect to login with booking page as returnUrl
+      const bookingUrl = `/booking?business_id=${businessId}&service_id=${serviceId}`;
+      const returnUrl = encodeURIComponent(bookingUrl);
+      router.push(`/auth/login/customer?returnUrl=${returnUrl}`);
+      return;
+    }
+    // If authenticated, let the Link handle navigation normally
+  };
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -297,6 +314,7 @@ export default function DiscountsSection() {
                               <Link 
                                 href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`}
                                 className="w-fit"
+                                onClick={(e) => handleBookNowClick(e, discount.business_id, discount.service_id)}
                               >
                                 <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full">
                                   Book Now

@@ -335,6 +335,19 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
     setIsConsultancyModalOpen(true);
   };
 
+  // Handle regular booking click - check if user is authenticated
+  const handleBookNowClick = (e: React.MouseEvent, businessId: string, serviceId: string) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      // Redirect to login with booking page as returnUrl
+      const bookingUrl = `/booking?business_id=${businessId}&service_id=${serviceId}`;
+      const returnUrl = encodeURIComponent(bookingUrl);
+      router.push(`/auth/login/customer?returnUrl=${returnUrl}`);
+      return;
+    }
+    // If authenticated, let the Link handle navigation normally
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1116,7 +1129,11 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                                 RM {serviceItem.price.toFixed(2)}
                           </span>
                         </div>
-                        <Link href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`} className="w-full sm:w-auto">
+                        <Link 
+                          href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`} 
+                          className="w-full sm:w-auto"
+                          onClick={(e) => handleBookNowClick(e, businessId, serviceItem.id)}
+                        >
                           <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
                             Book Now
                           </button>
@@ -1438,7 +1455,11 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                           </div>
                           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
                             {discount.business_id && discount.service_id ? (
-                              <Link href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`} className="w-full sm:w-auto">
+                              <Link 
+                                href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`} 
+                                className="w-full sm:w-auto"
+                                onClick={(e) => handleBookNowClick(e, discount.business_id, discount.service_id)}
+                              >
                                 <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer">
                                   Book Now
                                 </button>

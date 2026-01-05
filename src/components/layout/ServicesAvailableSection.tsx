@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import SortByPopup, { SortOption } from '@/components/shared/SortByPopup';
 import { getBusinessListing } from '@/services/business/business';
 import { getServiceListing } from '@/services/service/service';
@@ -122,6 +124,21 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
   const [loadingMoreServices, setLoadingMoreServices] = useState<{ [key: string]: boolean }>({});
   const scrollContainerRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const previousSortRef = useRef<SortOption | null>(null);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Handle Book Now click - check if user is authenticated
+  const handleBookNowClick = (e: React.MouseEvent, businessId: string, serviceId: string) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      // Redirect to login with booking page as returnUrl
+      const bookingUrl = `/booking?business_id=${businessId}&service_id=${serviceId}`;
+      const returnUrl = encodeURIComponent(bookingUrl);
+      router.push(`/auth/login/customer?returnUrl=${returnUrl}`);
+      return;
+    }
+    // If authenticated, let the Link handle navigation normally
+  };
 
   // Helper function to map business data
   const mapBusinessData = (business: {
@@ -763,7 +780,10 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
                                 )}
                                 <span className="text-red-500 font-medium text-sm sm:text-base">{service.currentPrice}</span>
                               </div>
-                              <Link href={`/booking?business_id=${salon.id}&service_id=${service.id}`}>
+                              <Link 
+                                href={`/booking?business_id=${salon.id}&service_id=${service.id}`}
+                                onClick={(e) => handleBookNowClick(e, salon.id, service.id)}
+                              >
                                 <button className="bg-blue-500 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-medium hover:bg-blue-600 transition-colors cursor-pointer">
                                   Book Now
                                 </button>
