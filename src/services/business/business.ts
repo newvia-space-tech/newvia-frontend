@@ -35,7 +35,7 @@ export const getBusinessDetail = async (businessId: string, userId?: string): Pr
   }
   const queryString = params.toString();
   const url = `businesses/business/${businessId}${queryString ? `?${queryString}` : ''}`;
-  
+
   const response = await apiRequest(url, { method: 'GET' });
 
   if (!response.ok) {
@@ -137,10 +137,10 @@ export const editBusinessLocation = async (
   }
 
   const data = await response.json();
-  
+
   // Handle nested response structure
   const responseData = data.response || data;
-  
+
   if (!responseData.status) {
     throw new Error(responseData.message || 'Failed to update business location');
   }
@@ -177,7 +177,7 @@ export const getBusinessListing = async (cityId?: string, categoryId?: string, h
   if (highestReview) {
     params.append('highest_review', 'true');
   }
-  
+
   const queryString = params.toString();
   const response = await apiRequest(`businesses/listing?${queryString}`, { method: 'GET' });
 
@@ -202,7 +202,7 @@ export const getPriorityListing = async (categoryId?: string, page: number = 1, 
   }
   params.append('page', page.toString());
   params.append('perPage', perPage.toString());
-  
+
   const queryString = params.toString();
   const response = await apiRequest(`businesses/priority-listing?${queryString}`, { method: 'GET' });
 
@@ -222,8 +222,8 @@ export const getPriorityListing = async (categoryId?: string, page: number = 1, 
 // Protected: Submit provider onboarding (requires authentication)
 export const submitProviderOnboarding = async (payload: ApiOnboardingPayload, authToken: string): Promise<unknown> => {
   const response = await apiRequest(
-    'provider/add-provider', 
-    { 
+    'provider/add-provider',
+    {
       method: 'POST',
       body: JSON.stringify(payload)
     },
@@ -266,8 +266,8 @@ export const getProviderKPIs = async (businessId: string, userId: string, authTo
 
 // Protected: Get provider booking-review dashboard (requires authentication)
 export const getBookingReviewDashboard = async (
-  businessId: string, 
-  userId: string, 
+  businessId: string,
+  userId: string,
   authToken: string,
   upcomingBookingsPerPage: number = 5,
   reviewsPerPage: number = 3
@@ -293,8 +293,8 @@ export const getBookingReviewDashboard = async (
 
 // Protected: Get provider booking management (requires authentication)
 export const getBookingManagement = async (
-  businessId: string, 
-  userId: string, 
+  businessId: string,
+  userId: string,
   filter: 'upcoming' | 'past' | 'cancelled',
   authToken: string
 ): Promise<BookingManagementResponse> => {
@@ -442,10 +442,10 @@ export const editBusinessInfo = async (
   }
 
   const data = await response.json();
-  
+
   // Handle nested response structure
   const responseData = data.response || data;
-  
+
   if (!responseData.status) {
     throw new Error(responseData.message || 'Failed to update business info');
   }
@@ -473,10 +473,10 @@ export const editWorkingHours = async (
   }
 
   const data = await response.json();
-  
+
   // Handle nested response structure if present
   const responseData = data.response || data;
-  
+
   if (!responseData.status) {
     throw new Error(responseData.message || 'Failed to update working hours');
   }
@@ -562,6 +562,49 @@ export const addAccountDetails = async (
   return data;
 };
 
+// Protected: Update account details (requires authentication)
+export interface UpdateAccountDetailsRequest {
+  business_id: string;
+  account_name: string;
+  account_number: string;
+  bank_name: string;
+}
+
+export interface UpdateAccountDetailsResponse {
+  status: boolean;
+  message: string;
+}
+
+export const updateAccountDetails = async (
+  payload: UpdateAccountDetailsRequest,
+  authToken: string
+): Promise<UpdateAccountDetailsResponse> => {
+  const response = await apiRequest(
+    `businesses/business/${payload.business_id}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({
+        account_name: payload.account_name,
+        account_number: payload.account_number,
+        bank_name: payload.bank_name,
+      }),
+    },
+    authToken
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update account details');
+  }
+
+  const data = await response.json();
+  if (!data.status) {
+    throw new Error(data.message || 'Failed to update account details');
+  }
+
+  return data;
+};
+
 // Protected: Upload images (requires authentication)
 export const uploadImages = async (
   images: File[],
@@ -569,12 +612,12 @@ export const uploadImages = async (
   authToken: string
 ): Promise<UploadImagesResponse> => {
   const formData = new FormData();
-  
+
   // Append each image file with the 'images[]' field name
   images.forEach((image) => {
     formData.append('images[]', image);
   });
-  
+
   // Append user_id
   formData.append('user_id', userId);
 
@@ -620,10 +663,10 @@ export const editBusinessImages = async (
   }
 
   const data = await response.json();
-  
+
   // Handle nested response structure if present
   const responseData = data.response || data;
-  
+
   if (!responseData.status) {
     throw new Error(responseData.message || 'Failed to update business images');
   }

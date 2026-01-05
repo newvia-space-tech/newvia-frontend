@@ -1186,6 +1186,9 @@ export interface AdminProviderManagement {
   week_net_to_provider: number;
   average_rating: number;
   total_reviews: number;
+  account_name?: string;
+  account_number?: string;
+  bank_name?: string;
 }
 
 export interface AdminProviderManagementPayload {
