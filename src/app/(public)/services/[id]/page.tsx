@@ -33,23 +33,23 @@ const formatNextAvailable = (timestamp: number): string => {
   if (!timestamp || timestamp === 0) {
     return 'Not available';
   }
-  
+
   try {
     // Handle timestamp - could be in seconds or milliseconds
     const timestampMs = timestamp > 1000000000000 ? timestamp : timestamp * 1000;
     const now = new Date();
     const availableDate = new Date(timestampMs);
-    
+
     // Check if date is valid
     if (isNaN(availableDate.getTime())) {
       return 'Not available';
     }
-    
+
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     const availableDay = new Date(availableDate.getFullYear(), availableDate.getMonth(), availableDate.getDate());
-    
+
     let dayLabel = '';
     if (availableDay.getTime() === today.getTime()) {
       dayLabel = 'Today';
@@ -58,13 +58,13 @@ const formatNextAvailable = (timestamp: number): string => {
     } else {
       dayLabel = availableDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
-    
-    const time = availableDate.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+
+    const time = availableDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
-    
+
     return `${dayLabel} ${time}`;
   } catch (error) {
     return 'Not available';
@@ -80,7 +80,7 @@ const getBusinessStatus = (businessHours: BusinessHourDay[]): { isOpen: boolean;
   try {
     const now = new Date();
     const currentDayJS = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    
+
     // Convert JS day (0-6) to API day format (1-6, where 1 = Monday)
     // API: 1 = Monday, 2 = Tuesday, ..., 6 = Saturday (no Sunday)
     // JS: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
@@ -123,18 +123,18 @@ const getBusinessStatus = (businessHours: BusinessHourDay[]): { isOpen: boolean;
     // Check if current time is within business hours
     if (currentTime >= startTimestamp && currentTime <= endTimestamp) {
       // Business is open
-      const closeTime = endTime.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
+      const closeTime = endTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
       return { isOpen: true, statusText: `Open until ${closeTime}` };
     } else if (currentTime < startTimestamp) {
       // Business hasn't opened yet today
-      const openTime = startTime.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
+      const openTime = startTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
       return { isOpen: false, statusText: `Opens at ${openTime}` };
     } else {
@@ -143,16 +143,16 @@ const getBusinessStatus = (businessHours: BusinessHourDay[]): { isOpen: boolean;
       const tomorrowJS = (currentDayJS + 1) % 7;
       const tomorrowAPI = tomorrowJS === 0 ? null : tomorrowJS;
       const tomorrowHours = tomorrowAPI ? businessHours.find(h => h.day === tomorrowAPI && h.is_open) : null;
-      
+
       if (tomorrowHours) {
-        const tomorrowOpenTime = new Date(tomorrowHours.start_time).toLocaleTimeString('en-US', { 
-          hour: 'numeric', 
+        const tomorrowOpenTime = new Date(tomorrowHours.start_time).toLocaleTimeString('en-US', {
+          hour: 'numeric',
           minute: '2-digit',
-          hour12: true 
+          hour12: true
         });
         return { isOpen: false, statusText: `Opens tomorrow at ${tomorrowOpenTime}` };
       }
-      
+
       return { isOpen: false, statusText: 'Closed' };
     }
   } catch (error) {
@@ -288,15 +288,15 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
   // Unwrap params using React.use()
   const unwrappedParams = use(params);
   const businessId = unwrappedParams.id;
-  
+
   const searchParams = useSearchParams();
-  
+
   // Extract search parameters from URL
   const searchQuery = searchParams.get('q') || '';
   const location = searchParams.get('location') || '';
   const categoryId = searchParams.get('category_id') || undefined;
   const cityId = searchParams.get('city_id') || undefined;
-  
+
   const [businessData, setBusinessData] = useState<BusinessDetail | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [businessHours, setBusinessHours] = useState<BusinessHourDay[]>([]);
@@ -320,7 +320,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
   const reviewsPerPage = 4;
   const { user, logout, loading: authLoading, authToken, isAuthenticated } = useAuth();
   const router = useRouter();
-  
+
   // Online Consultancy Booking Modal state
   const [isConsultancyModalOpen, setIsConsultancyModalOpen] = useState(false);
   const [isConsultancySuccessModalOpen, setIsConsultancySuccessModalOpen] = useState(false);
@@ -357,7 +357,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
         setCurrentReviewsPage(1);
         setHasMoreServices(false);
         setHasMoreReviews(false);
-        
+
         const [businessResponse, servicesResponse, hoursResponse, reviewsResponse, imagesResponse, discountsResponse] = await Promise.all([
           getBusinessDetail(businessId, user?.id),
           getServiceListing(businessId, 'asc', 1, servicesPerPage),
@@ -366,7 +366,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
           getBusinessImages(businessId),
           getBusinessDiscounts(businessId, 1, 1)
         ]);
-        
+
         setBusinessData(businessResponse.payload);
         setIsFavourite(businessResponse.payload.is_favourite || false);
         setServices(servicesResponse.payload.items);
@@ -405,11 +405,11 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
 
       const now = Date.now();
       const diff = Math.max(0, discount.valid_till - now);
-      
+
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
+
       setCountdown({
         hours: hours.toString().padStart(2, '0'),
         minutes: minutes.toString().padStart(2, '0'),
@@ -627,7 +627,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <UnifiedHeader 
+      <UnifiedHeader
         searchQuery={searchQuery}
         location={location}
         categoryId={categoryId}
@@ -647,7 +647,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                 {isVerified && (
                   <div className="bg-[#6290f2] flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
                     <Image
-                      src={sealCheckIcon} 
+                      src={sealCheckIcon}
                       alt="Verified"
                       width={18}
                       height={18}
@@ -678,12 +678,12 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
             </div>
             <div className="flex gap-1.5 sm:gap-2">
               {user && user.role === 'customer' && (
-                <button 
+                <button
                   onClick={handleToggleFavourite}
                   disabled={isTogglingFavourite}
                   className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Heart 
+                  <Heart
                     fill={isFavourite ? 'currentColor' : 'none'}
                     className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavourite ? 'text-red-500' : 'text-gray-600'}`}
                   />
@@ -692,7 +692,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                   </span>
                 </button>
               )}
-              <button 
+              <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
               >
@@ -714,22 +714,22 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
 
               // Find thumbnail image (only if it has valid image URL)
               const thumbnailImage = businessImages.find(img => img.is_thumbnail && isValidImage(img));
-              
+
               // Get remaining images (non-thumbnail) with valid URLs, limit to 4
               const otherImages = businessImages
                 .filter(img => !img.is_thumbnail && isValidImage(img))
                 .slice(0, 4);
-              
+
               // Check if we have any valid images at all
               const hasThumbnail = !!thumbnailImage;
               const hasOtherImages = otherImages.length > 0;
               const hasAnyImages = hasThumbnail || hasOtherImages;
-              
+
               // Combine all images for mobile carousel (thumbnail first, then others)
-              const allImages = thumbnailImage 
+              const allImages = thumbnailImage
                 ? [thumbnailImage, ...otherImages]
                 : otherImages;
-              
+
               // If no images at all, show single placeholder
               if (!hasAnyImages) {
                 return (
@@ -738,17 +738,17 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                     <div className="lg:hidden">
                       <div className="w-full h-64 sm:h-80 rounded-2xl overflow-hidden bg-gray-100 flex items-center justify-center">
                         <div className="flex flex-col items-center gap-2 text-gray-400">
-                          <svg 
-                            className="w-12 h-12" 
-                            fill="none" 
-                            stroke="currentColor" 
+                          <svg
+                            className="w-12 h-12"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round" 
-                              strokeWidth={1.5} 
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
                           </svg>
                           <span className="text-xs font-medium">No Images Available</span>
@@ -760,17 +760,17 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                     <div className="hidden lg:flex flex-row gap-2 h-[545px] rounded-2xl overflow-hidden">
                       <div className="w-full flex items-center justify-center bg-gray-100">
                         <div className="flex flex-col items-center gap-2 text-gray-400">
-                          <svg 
-                            className="w-12 h-12" 
-                            fill="none" 
-                            stroke="currentColor" 
+                          <svg
+                            className="w-12 h-12"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round" 
-                              strokeWidth={1.5} 
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
                           </svg>
                           <span className="text-xs font-medium">No Images Available</span>
@@ -780,18 +780,18 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                   </>
                 );
               }
-              
+
               return (
                 <>
                   {/* Mobile: Horizontal Swipeable Carousel */}
                   <div className="lg:hidden">
-                    <div 
+                    <div
                       ref={imageCarouselRef}
                       className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory"
                       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                       {allImages.map((img, index) => (
-                        <div 
+                        <div
                           key={index}
                           className="flex-shrink-0 w-full h-64 sm:h-80 rounded-2xl overflow-hidden snap-center"
                         >
@@ -825,11 +825,10 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                             <button
                               key={index}
                               onClick={handlePillClick}
-                              className={`transition-all ${
-                                index === currentImageIndex
+                              className={`transition-all ${index === currentImageIndex
                                   ? 'w-6 h-2 bg-[#6290f2] rounded-full'
                                   : 'w-2 h-2 bg-gray-300 rounded-full hover:bg-gray-400'
-                              }`}
+                                }`}
                               aria-label={`Go to image ${index + 1} of ${allImages.length}`}
                             />
                           );
@@ -868,17 +867,17 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                         ) : (
                           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                             <div className="flex flex-col items-center gap-2 text-gray-400">
-                              <svg 
-                                className="w-12 h-12" 
-                                fill="none" 
-                                stroke="currentColor" 
+                              <svg
+                                className="w-12 h-12"
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                               >
-                                <path 
-                                  strokeLinecap="round" 
-                                  strokeLinejoin="round" 
-                                  strokeWidth={1.5} 
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={1.5}
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                 />
                               </svg>
                               <span className="text-xs font-medium">No Image Available</span>
@@ -1021,17 +1020,17 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
             <div className="flex gap-2 h-64 sm:h-80 lg:h-[545px] rounded-2xl overflow-hidden bg-gray-100">
               <div className="w-full flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2 text-gray-400">
-                  <svg 
-                    className="w-12 h-12" 
-                    fill="none" 
-                    stroke="currentColor" 
+                  <svg
+                    className="w-12 h-12"
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={1.5} 
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
                   <span className="text-xs font-medium">No Images Available</span>
@@ -1063,14 +1062,14 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                 Services
               </h2>
               {services.length > 0 ? (
-              <div className="space-y-6">
+                <div className="space-y-6">
                   {services.map((serviceItem) => {
                     const durationHours = Math.floor(serviceItem.duration_minutes / 60);
                     const durationMinutes = serviceItem.duration_minutes % 60;
-                    const durationText = durationHours > 0 
-                      ? `${durationHours}h ${durationMinutes > 0 ? `${durationMinutes}min` : ''}` 
+                    const durationText = durationHours > 0
+                      ? `${durationHours}h ${durationMinutes > 0 ? `${durationMinutes}min` : ''}`
                       : `${durationMinutes}min`;
-                    
+
                     // Use the same formatNextAvailable function as the main page
                     const nextAvailableText = formatNextAvailable(serviceItem.next_available);
 
@@ -1078,83 +1077,83 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                     const hasDiscount = serviceItem.hide_price > serviceItem.price;
 
                     return (
-                  <div key={serviceItem.id} className="border border-[#e5e7ea] rounded-lg p-4 sm:p-5">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-                      <div className="flex-1 w-full">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-base sm:text-lg font-semibold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '28px' }}>
-                            {serviceItem.name}
-                          </h3>
-                        </div>
-                        {serviceItem.description && (
-                          <p className="text-[#797e84] text-sm sm:text-base mb-3 sm:mb-4" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
-                            {serviceItem.description}
-                          </p>
-                        )}
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-1">
-                            <Image
-                              src={clockIcon}
-                              alt="Clock"
-                              width={18}
-                              height={18}
-                              className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                            />
-                            <span className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                      <div key={serviceItem.id} className="border border-[#e5e7ea] rounded-lg p-4 sm:p-5">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                          <div className="flex-1 w-full">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-base sm:text-lg font-semibold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '28px' }}>
+                                {serviceItem.name}
+                              </h3>
+                            </div>
+                            {serviceItem.description && (
+                              <p className="text-[#797e84] text-sm sm:text-base mb-3 sm:mb-4" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                                {serviceItem.description}
+                              </p>
+                            )}
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <Image
+                                  src={clockIcon}
+                                  alt="Clock"
+                                  width={18}
+                                  height={18}
+                                  className="w-4 h-4 sm:w-4.5 sm:h-4.5"
+                                />
+                                <span className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
                                   {durationText}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Image
-                              src={calendarIcon}
-                              alt="Calendar"
-                              width={18}
-                              height={18}
-                              className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                            />
-                            <span className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Image
+                                  src={calendarIcon}
+                                  alt="Calendar"
+                                  width={18}
+                                  height={18}
+                                  className="w-4 h-4 sm:w-4.5 sm:h-4.5"
+                                />
+                                <span className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
                                   Next available: {nextAvailableText}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
+                            <div className="flex items-end gap-1.5">
+                              {hasDiscount && (
+                                <span className="text-[#9ea5ad] text-xs sm:text-sm line-through" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '20px' }}>
+                                  RM {serviceItem.hide_price.toFixed(2)}
+                                </span>
+                              )}
+                              <span className="text-[#e43636] text-base sm:text-lg font-medium" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
+                                RM {serviceItem.price.toFixed(2)}
+                              </span>
+                            </div>
+                            <Link
+                              href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`}
+                              className="w-full sm:w-auto"
+                              onClick={(e) => handleBookNowClick(e, businessId, serviceItem.id)}
+                            >
+                              <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
+                                Book Now
+                              </button>
+                            </Link>
+                            <span className="text-[#9ea5ad] text-xs" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '16px' }}>
+                              Free cancellation
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div className="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
-                        <div className="flex items-end gap-1.5">
-                              {hasDiscount && (
-                          <span className="text-[#9ea5ad] text-xs sm:text-sm line-through" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '20px' }}>
-                                  RM {serviceItem.hide_price.toFixed(2)}
-                          </span>
-                              )}
-                          <span className="text-[#e43636] text-base sm:text-lg font-medium" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
-                                RM {serviceItem.price.toFixed(2)}
-                          </span>
-                        </div>
-                        <Link 
-                          href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`} 
-                          className="w-full sm:w-auto"
-                          onClick={(e) => handleBookNowClick(e, businessId, serviceItem.id)}
-                        >
-                          <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
-                            Book Now
-                          </button>
-                        </Link>
-                        <span className="text-[#9ea5ad] text-xs" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '16px' }}>
-                          Free cancellation
-                        </span>
-                      </div>
-                    </div>
-                  </div>
                     );
                   })}
                   {hasMoreServices && (
-                    <button 
+                    <button
                       onClick={loadMoreServices}
                       className="flex items-center justify-center gap-2 w-full hover:bg-gray-50 py-2 rounded-lg transition-colors"
                     >
-                  <span className="text-black text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
-                    View more
-                  </span>
-                  <ChevronRight className="w-5 h-5 text-black" />
+                      <span className="text-black text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                        View more
+                      </span>
+                      <ChevronRight className="w-5 h-5 text-black" />
                     </button>
                   )}
                 </div>
@@ -1173,16 +1172,16 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                   (() => {
                     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                     const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-                    
+
                     // Create an array for all days (0-6)
                     const allDays = Array.from({ length: 7 }, (_, i) => i);
-                    
+
                     return allDays.map((dayIndex) => {
                       // Convert JS day (0-6) to API day (1-6 for Mon-Sat, no Sunday)
                       const apiDayIndex = dayIndex === 0 ? null : dayIndex;
                       const hourData = apiDayIndex ? businessHours.find(h => h.day === apiDayIndex) : null;
                       const isToday = dayIndex === today;
-                      
+
                       let hoursText = 'Closed';
                       if (hourData && hourData.is_open) {
                         const startTime = new Date(hourData.start_time);
@@ -1191,21 +1190,20 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                         const endStr = endTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
                         hoursText = `${startStr} to ${endStr}`;
                       }
-                      
+
                       return (
                         <div
                           key={dayIndex}
-                    className={`flex flex-col sm:flex-row items-start sm:items-center gap-1 p-2 rounded-lg ${
-                            isToday ? 'bg-[#e9f9f0] text-[#1fc16b]' : ''
-                    }`}
-                  >
-                    <span className="w-full sm:w-25 text-sm sm:text-base font-semibold" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '24px' }}>
+                          className={`flex flex-col sm:flex-row items-start sm:items-center gap-1 p-2 rounded-lg ${isToday ? 'bg-[#e9f9f0] text-[#1fc16b]' : ''
+                            }`}
+                        >
+                          <span className="w-full sm:w-25 text-sm sm:text-base font-semibold" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '24px' }}>
                             {dayNames[dayIndex]}
-                    </span>
-                    <span className="text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                          </span>
+                          <span className="text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
                             {hoursText}
-                    </span>
-                  </div>
+                          </span>
+                        </div>
                       );
                     });
                   })()
@@ -1285,13 +1283,13 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                 Reviews
               </h2>
               {reviews.length > 0 ? (
-              <div className="space-y-6 sm:space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   {reviews.map((review, index) => {
                     const reviewDate = new Date(review.created_at);
                     const now = new Date();
                     const diffTime = Math.abs(now.getTime() - reviewDate.getTime());
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    
+
                     let timeAgo = '';
                     if (diffDays === 0) {
                       timeAgo = 'Today';
@@ -1314,64 +1312,64 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                     const hasAvatar = review.user_profile_pic && review.user_profile_pic.trim() !== '';
 
                     return (
-                  <div key={review.id} className="space-y-3 sm:space-y-4">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                      <div className="flex items-center gap-2 sm:gap-3">
+                      <div key={review.id} className="space-y-3 sm:space-y-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 sm:gap-3">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
                               {hasAvatar ? (
-                          <Image
+                                <Image
                                   src={review.user_profile_pic}
                                   alt={userName}
-                            width={40}
-                            height={40}
-                            className="w-full h-full object-cover"
-                          />
+                                  width={40}
+                                  height={40}
+                                  className="w-full h-full object-cover"
+                                />
                               ) : (
                                 <span className="text-gray-600 font-semibold text-sm sm:text-lg">
                                   {review.user_first_name.charAt(0)}{review.user_last_name.charAt(0)}
                                 </span>
                               )}
-                        </div>
-                        <div>
-                          <h4 className="text-base sm:text-lg font-semibold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '28px' }}>
+                            </div>
+                            <div>
+                              <h4 className="text-base sm:text-lg font-semibold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 600, lineHeight: '28px' }}>
                                 {userName}
-                          </h4>
-                          <p className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                              </h4>
+                              <p className="text-[#797e84] text-sm sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
                                 {review.service_name}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-start sm:items-end">
-                        <div className="flex gap-1">
-                          {[...Array(5)].map((_, i) => (
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-start sm:items-end">
+                            <div className="flex gap-1">
+                              {[...Array(5)].map((_, i) => (
                                 <svg key={i} className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </div>
-                        <span className="text-[#797e84] text-xs sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                            <span className="text-[#797e84] text-xs sm:text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
                               {timeAgo}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-base sm:text-lg text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '28px' }}>
-                      {review.comment}
-                    </p>
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-base sm:text-lg text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '28px' }}>
+                          {review.comment}
+                        </p>
                         {index < reviews.length - 1 && (
-                      <div className="w-full h-px bg-[#e5e7ea]"></div>
-                    )}
-                  </div>
+                          <div className="w-full h-px bg-[#e5e7ea]"></div>
+                        )}
+                      </div>
                     );
                   })}
                   {hasMoreReviews && (
-                    <button 
+                    <button
                       onClick={loadMoreReviews}
                       className="flex items-center justify-center gap-2 w-full hover:bg-gray-50 py-2 rounded-lg transition-colors"
                     >
-                  <span className="text-black text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
-                    View more
-                  </span>
-                  <ChevronRight className="w-5 h-5 text-black" />
+                      <span className="text-black text-base" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 400, lineHeight: '24px' }}>
+                        View more
+                      </span>
+                      <ChevronRight className="w-5 h-5 text-black" />
                     </button>
                   )}
                 </div>
@@ -1389,133 +1387,130 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                 {/* Discount Section - Only show if discounts exist */}
                 {discounts.length > 0 && (
                   <div>
-                  {/* Header with Navigation Arrows */}
-                  <div className="relative flex items-center mb-4 sm:mb-5">
-                    <h2 className="text-xl sm:text-2xl font-bold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, lineHeight: '32px' }}>
-                      Discount & Coupon
-                    </h2>
-                    {/* Navigation Arrows - Top Right (aligned with card edge) */}
-                    {discountPagination.pageTotal > 1 && (
-                      <div className="absolute right-0 flex items-center gap-2">
-                        <button
-                          onClick={handlePrevDiscount}
-                          disabled={discountPagination.prevPage === null}
-                          className={`rounded-full p-1.5 transition-colors ${
-                            discountPagination.prevPage === null 
-                              ? 'bg-gray-100 cursor-not-allowed' 
-                              : 'bg-gray-200 hover:bg-gray-300'
-                          }`}
-                          aria-label="Previous discount"
-                        >
-                          <ChevronLeft className={`w-4 h-4 ${discountPagination.prevPage === null ? 'text-gray-400' : 'text-gray-700'}`} />
-                        </button>
-                        <button
-                          onClick={handleNextDiscount}
-                          disabled={discountPagination.nextPage === null}
-                          className={`rounded-full p-1.5 transition-colors ${
-                            discountPagination.nextPage === null 
-                              ? 'bg-gray-100 cursor-not-allowed' 
-                              : 'bg-gray-200 hover:bg-gray-300'
-                          }`}
-                          aria-label="Next discount"
-                        >
-                          <ChevronRight className={`w-4 h-4 ${discountPagination.nextPage === null ? 'text-gray-400' : 'text-gray-700'}`} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {(() => {
-                    const discount = discounts[0];
-                    const discountText = discount.type === 'percent' 
-                      ? `${discount.value}% off` 
-                      : `RM ${discount.value} off`;
-                    
-                    return (
-                      <div className="relative">
-                        <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
-                        <div className="absolute inset-0">
-                          <Image 
-                            alt={discount.description || "Discount"} 
-                            className="absolute inset-0 w-full h-full object-cover opacity-20" 
-                            src={discount.image}
-                            fill
-                          />
+                    {/* Header with Navigation Arrows */}
+                    <div className="relative flex items-center mb-4 sm:mb-5">
+                      <h2 className="text-xl sm:text-2xl font-bold text-black" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 700, lineHeight: '32px' }}>
+                        Discount & Coupon
+                      </h2>
+                      {/* Navigation Arrows - Top Right (aligned with card edge) */}
+                      {discountPagination.pageTotal > 1 && (
+                        <div className="absolute right-0 flex items-center gap-2">
+                          <button
+                            onClick={handlePrevDiscount}
+                            disabled={discountPagination.prevPage === null}
+                            className={`rounded-full p-1.5 transition-colors ${discountPagination.prevPage === null
+                                ? 'bg-gray-100 cursor-not-allowed'
+                                : 'bg-gray-200 hover:bg-gray-300'
+                              }`}
+                            aria-label="Previous discount"
+                          >
+                            <ChevronLeft className={`w-4 h-4 ${discountPagination.prevPage === null ? 'text-gray-400' : 'text-gray-700'}`} />
+                          </button>
+                          <button
+                            onClick={handleNextDiscount}
+                            disabled={discountPagination.nextPage === null}
+                            className={`rounded-full p-1.5 transition-colors ${discountPagination.nextPage === null
+                                ? 'bg-gray-100 cursor-not-allowed'
+                                : 'bg-gray-200 hover:bg-gray-300'
+                              }`}
+                            aria-label="Next discount"
+                          >
+                            <ChevronRight className={`w-4 h-4 ${discountPagination.nextPage === null ? 'text-gray-400' : 'text-gray-700'}`} />
+                          </button>
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
+                      )}
+                    </div>
 
-                        <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
-                          <div className="text-white">
-                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed mb-2">
-                              {discount.description}
-                            </p>
-                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
-                              and enjoy <span className="text-xl sm:text-2xl font-bold text-[#fab12f]">{discountText}</span>
-                            </p>
-                          </div>
-                          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
-                            {discount.business_id && discount.service_id ? (
-                              <Link 
-                                href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`} 
-                                className="w-full sm:w-auto"
-                                onClick={(e) => handleBookNowClick(e, discount.business_id, discount.service_id)}
-                              >
-                                <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer">
-                                  Book Now
-                                </button>
-                              </Link>
-                            ) : (
-                              <button 
-                                className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
-                                disabled
-                              >
-                                Book Now
-                              </button>
-                            )}
-                            {/* Countdown Timer - Bottom Right */}
-                            <div className="flex flex-col items-start sm:items-end gap-1">
-                              <span className="text-white text-xs font-medium">Offer Ends in</span>
-                              <div className="flex items-center gap-1">
-                                <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
-                                  <span className="text-black text-xs font-semibold">{countdown.hours}</span>
-                                </div>
-                                <span className="text-xs text-white font-semibold">:</span>
-                                <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
-                                  <span className="text-black text-xs font-semibold">{countdown.minutes}</span>
-                                </div>
-                                <span className="text-xs text-white font-semibold">:</span>
-                                <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
-                                  <span className="text-black text-xs font-semibold">{countdown.seconds}</span>
+                    {(() => {
+                      const discount = discounts[0];
+                      const discountText = discount.type === 'percent'
+                        ? `${discount.value}% off`
+                        : `RM ${discount.value} off`;
+
+                      return (
+                        <div className="relative">
+                          <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
+                            <div className="absolute inset-0">
+                              <Image
+                                alt={discount.description || "Discount"}
+                                className="absolute inset-0 w-full h-full object-cover opacity-20"
+                                src={discount.image}
+                                fill
+                              />
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
+
+                            <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
+                              <div className="text-white">
+                                <p className="text-base sm:text-lg lg:text-xl leading-relaxed mb-2">
+                                  {discount.description}
+                                </p>
+                                <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
+                                  and enjoy <span className="text-xl sm:text-2xl font-bold text-[#fab12f]">{discountText}</span>
+                                </p>
+                              </div>
+                              <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
+                                {discount.business_id && discount.service_id ? (
+                                  <Link
+                                    href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`}
+                                    className="w-full sm:w-auto"
+                                    onClick={(e) => handleBookNowClick(e, discount.business_id!, discount.service_id!)}
+                                  >
+                                    <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer">
+                                      Book Now
+                                    </button>
+                                  </Link>
+                                ) : (
+                                  <button
+                                    className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
+                                    disabled
+                                  >
+                                    Book Now
+                                  </button>
+                                )}
+                                {/* Countdown Timer - Bottom Right */}
+                                <div className="flex flex-col items-start sm:items-end gap-1">
+                                  <span className="text-white text-xs font-medium">Offer Ends in</span>
+                                  <div className="flex items-center gap-1">
+                                    <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
+                                      <span className="text-black text-xs font-semibold">{countdown.hours}</span>
+                                    </div>
+                                    <span className="text-xs text-white font-semibold">:</span>
+                                    <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
+                                      <span className="text-black text-xs font-semibold">{countdown.minutes}</span>
+                                    </div>
+                                    <span className="text-xs text-white font-semibold">:</span>
+                                    <div className="bg-white/90 backdrop-blur-sm flex items-center justify-center px-2 py-1 rounded">
+                                      <span className="text-black text-xs font-semibold">{countdown.seconds}</span>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
 
-                        {/* Pill Indicators */}
-                        {discountPagination.pageTotal > 1 && (
-                          <div className="flex items-center justify-center gap-1.5 mt-4">
-                            {Array.from({ length: discountPagination.pageTotal }, (_, index) => {
-                              const pageNumber = index + 1;
-                              return (
-                                <button
-                                  key={pageNumber}
-                                  onClick={() => handleDiscountDotClick(pageNumber)}
-                                  className={`transition-all ${
-                                    pageNumber === currentDiscountPage
-                                      ? 'w-6 h-2 bg-[#fab12f] rounded-full'
-                                      : 'w-2 h-2 bg-gray-300 rounded-full hover:bg-gray-400'
-                                  }`}
-                                  aria-label={`Go to discount ${pageNumber}`}
-                                />
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
+                          {/* Pill Indicators */}
+                          {discountPagination.pageTotal > 1 && (
+                            <div className="flex items-center justify-center gap-1.5 mt-4">
+                              {Array.from({ length: discountPagination.pageTotal }, (_, index) => {
+                                const pageNumber = index + 1;
+                                return (
+                                  <button
+                                    key={pageNumber}
+                                    onClick={() => handleDiscountDotClick(pageNumber)}
+                                    className={`transition-all ${pageNumber === currentDiscountPage
+                                        ? 'w-6 h-2 bg-[#fab12f] rounded-full'
+                                        : 'w-2 h-2 bg-gray-300 rounded-full hover:bg-gray-400'
+                                      }`}
+                                    aria-label={`Go to discount ${pageNumber}`}
+                                  />
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 
@@ -1531,42 +1526,42 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
 
                     {/* Consultancy Card */}
                     <div className="relative">
-                          <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
-                          <div className="absolute inset-0">
-                            <Image 
-                              alt="Online Consultancy" 
-                              className="absolute inset-0 w-full h-full object-cover opacity-20" 
-                              src={businessData.onine_consultancy.image || "/figma-assets/yoga-session.png"}
-                              fill
-                            />
-                          </div>
-                          <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
+                      <div className="bg-[#19183b] h-auto sm:h-48 w-full rounded-xl overflow-hidden relative">
+                        <div className="absolute inset-0">
+                          <Image
+                            alt="Online Consultancy"
+                            className="absolute inset-0 w-full h-full object-cover opacity-20"
+                            src={businessData.onine_consultancy.image || "/figma-assets/yoga-session.png"}
+                            fill
+                          />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#19183b]/30 via-[#19183b]/20 to-[#19183b]/10" />
 
-                          <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
-                            <div className="text-white">
-                              <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
-                                {businessData.onine_consultancy.customer_description || 'Schedule A Free Online Session With Experts Today'}
-                              </p>
-                            </div>
-                            <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
-                              {businessData && businessId ? (
-                                <button 
-                                  onClick={handleConsultancyBookClick}
-                                  className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer"
-                                >
-                                  {isAuthenticated ? 'Book Now' : 'Login to Book'}
-                                </button>
-                              ) : (
-                                <button 
-                                  className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
-                                  disabled
-                                >
-                                  Book Now
-                                </button>
-                              )}
-                            </div>
+                        <div className="relative z-10 p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between min-h-[200px] sm:min-h-0">
+                          <div className="text-white">
+                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed">
+                              {businessData.onine_consultancy.customer_description || 'Schedule A Free Online Session With Experts Today'}
+                            </p>
+                          </div>
+                          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
+                            {businessData && businessId ? (
+                              <button
+                                onClick={handleConsultancyBookClick}
+                                className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer"
+                              >
+                                {isAuthenticated ? 'Book Now' : 'Login to Book'}
+                              </button>
+                            ) : (
+                              <button
+                                className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit opacity-50 cursor-not-allowed"
+                                disabled
+                              >
+                                Book Now
+                              </button>
+                            )}
                           </div>
                         </div>
+                      </div>
                     </div>
                   </div>
                 )}

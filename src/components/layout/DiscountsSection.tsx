@@ -15,11 +15,11 @@ const discountIcon = '/figma-assets/forward-arrow.svg'; // Discount section icon
 function formatCountdown(validTill: number): { hours: string; minutes: string; seconds: string } {
   const now = Date.now();
   const diff = Math.max(0, validTill - now);
-  
+
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  
+
   return {
     hours: hours.toString().padStart(2, '0'),
     minutes: minutes.toString().padStart(2, '0'),
@@ -174,7 +174,7 @@ export default function DiscountsSection() {
     }
 
     container.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     return () => {
       container.removeEventListener('scroll', handleScroll);
       if ('onscrollend' in container) {
@@ -193,15 +193,15 @@ export default function DiscountsSection() {
   // Handle dot navigation clicks
   const handleDotClick = (index: number) => {
     if (!scrollContainerRef.current || isScrollingRef.current) return;
-    
+
     const containerWidth = scrollContainerRef.current.offsetWidth;
     const scrollPosition = index * containerWidth;
-    
+
     scrollContainerRef.current.scrollTo({
       left: scrollPosition,
       behavior: 'smooth',
     });
-    
+
     setCurrentIndex(index);
   };
 
@@ -218,10 +218,10 @@ export default function DiscountsSection() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <div className="w-5 h-5">
-                <Image 
-                  alt="Discount icon" 
-                  className="w-full h-full" 
-                  src={discountIcon} 
+                <Image
+                  alt="Discount icon"
+                  className="w-full h-full"
+                  src={discountIcon}
                   width={20}
                   height={20}
                 />
@@ -255,8 +255,8 @@ export default function DiscountsSection() {
             <div
               ref={scrollContainerRef}
               className="flex gap-8 w-full overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth"
-              style={{ 
-                scrollbarWidth: 'none', 
+              style={{
+                scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
                 WebkitOverflowScrolling: 'touch'
               }}
@@ -282,9 +282,9 @@ export default function DiscountsSection() {
                           style={{ backgroundColor: bgColor }}
                         >
                           <div className="absolute inset-0">
-                            <Image 
-                              alt={discount.description} 
-                              className="absolute inset-0 w-full h-full object-cover opacity-20" 
+                            <Image
+                              alt={discount.description}
+                              className="absolute inset-0 w-full h-full object-cover opacity-20"
                               src={discount.image}
                               fill
                             />
@@ -292,7 +292,7 @@ export default function DiscountsSection() {
                           <div className="absolute inset-0 bg-gradient-to-r" style={{
                             background: `linear-gradient(to right, ${bgColor}, ${bgColor}CC, transparent)`
                           }} />
-                          
+
                           {/* Countdown Timer - Top Right */}
                           <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-1">
                             <span className="text-white text-xs font-medium"> Offer Ends in</span>
@@ -311,17 +311,17 @@ export default function DiscountsSection() {
                               </p>
                             </div>
                             {discount.business_id && discount.service_id ? (
-                              <Link 
+                              <Link
                                 href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`}
                                 className="w-fit"
-                                onClick={(e) => handleBookNowClick(e, discount.business_id, discount.service_id)}
+                                onClick={(e) => handleBookNowClick(e, discount.business_id!, discount.service_id!)}
                               >
                                 <button className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full">
                                   Book Now
                                 </button>
                               </Link>
                             ) : (
-                              <button 
+                              <button
                                 className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-fit opacity-50 cursor-not-allowed"
                                 disabled
                               >
@@ -348,9 +348,8 @@ export default function DiscountsSection() {
                   <button
                     key={index}
                     onClick={() => handleDotClick(index)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      index === currentIndex ? 'bg-[#e43636] w-6' : 'bg-gray-300 w-2'
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-[#e43636] w-6' : 'bg-gray-300 w-2'
+                      }`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                 ))}
