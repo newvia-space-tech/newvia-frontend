@@ -94,6 +94,10 @@ export const login = async (loginData: LoginRequest): Promise<LoginResponse> => 
       firstName: data.payload.user.first_name,
       lastName: data.payload.user.last_name,
       createdAt: data.payload.user.created_at,
+      // Provider-specific fields (only present for provider role)
+      businessId: data.payload.business_id,
+      isReviewed: data.payload.is_reviewed,
+      isOnboarded: data.payload.is_onboarded,
     }
   };
 };
@@ -185,5 +189,39 @@ export const createAccount = async (accountData: CreateAccountRequest): Promise<
   // 200 OK - registration successful, return message from API
   const successData = await response.json().catch(() => ({}));
   return successData.message || 'Account created successfully!';
+};
+
+// Update password
+export interface UpdatePasswordRequest {
+  new_password: string;
+}
+
+export interface UpdatePasswordResponse {
+  status: boolean;
+  message: string;
+}
+
+export const updatePassword = async (
+  passwordData: UpdatePasswordRequest,
+  authToken: string
+): Promise<UpdatePasswordResponse> => {
+  const response = await apiRequest('auth/update_password', {
+    method: 'POST',
+    body: JSON.stringify({
+      new_password: passwordData.new_password,
+    }),
+  }, authToken);
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const errorMessage = errorData.message || 'Failed to update password';
+    const error = new Error(errorMessage) as ApiError;
+    error.status = response.status;
+    error.data = errorData;
+    throw error;
+  }
+
+  const data = await response.json();
+  return data;
 };
 

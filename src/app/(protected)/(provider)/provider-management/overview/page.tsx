@@ -243,7 +243,7 @@ export default function OverviewPage() {
                       lineHeight: '28px'
                     }}
                   >
-                    {kpis.currency} {kpis.monthly_earning.toLocaleString()}
+                    {kpis.currency} {(kpis.monthly_earning ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg p-2 shrink-0 bg-[#ffde82]">
@@ -272,7 +272,7 @@ export default function OverviewPage() {
                       lineHeight: '28px'
                     }}
                   >
-                    {kpis.total_bookings.toLocaleString()}
+                    {(kpis.total_bookings ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg p-2 shrink-0 bg-[#ffde82]">
@@ -330,7 +330,7 @@ export default function OverviewPage() {
                       lineHeight: '28px'
                     }}
                   >
-                    {kpis.total_customers.toLocaleString()}
+                    {(kpis.total_customers ?? 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="rounded-lg p-2 shrink-0 bg-[#ffde82]">

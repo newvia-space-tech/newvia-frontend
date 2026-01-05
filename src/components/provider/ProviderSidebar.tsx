@@ -13,7 +13,8 @@ import {
   User,
   LogOut,
   Menu,
-  X
+  X,
+  KeyRound
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -99,6 +100,12 @@ export default function ProviderSidebar() {
       label: 'Settings',
       icon: Settings,
       href: '/provider-management/settings'
+    },
+    {
+      id: 'reset-password',
+      label: 'Reset Password',
+      icon: KeyRound,
+      href: '/provider-management/reset-password'
     },
     {
       id: 'profile',

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { UserRole } from '@/types';
 
@@ -20,6 +20,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const { isAuthenticated, loading, isLoggingOut, user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   // Show loading spinner while checking authentication or logging out
   if (loading || isLoggingOut) {
@@ -35,7 +36,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    router.push(redirectTo || '/auth/login/customer');
+    // Include return URL (current path + search params) so user can be redirected back after login
+    const returnUrl = typeof window !== 'undefined' 
+      ? encodeURIComponent(window.location.pathname + window.location.search)
+      : '';
+    const loginUrl = redirectTo || '/auth/login/customer';
+    const loginUrlWithReturn = returnUrl 
+      ? `${loginUrl}${loginUrl.includes('?') ? '&' : '?'}returnUrl=${returnUrl}`
+      : loginUrl;
+    router.push(loginUrlWithReturn);
     return null;
   }
 
