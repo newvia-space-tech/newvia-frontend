@@ -474,10 +474,22 @@ export interface PriorityListing {
   image: string;
 }
 
+export interface PriorityListingPayload {
+  offset: number;
+  curPage: number;
+  perPage: number;
+  nextPage: number | null;
+  prevPage: number | null;
+  pageTotal: number;
+  itemsTotal: number;
+  itemsReceived: number;
+  items: PriorityListing[];
+}
+
 export interface PriorityListingResponse {
   status: boolean;
   message: string;
-  payload: PriorityListing[];
+  payload: PriorityListingPayload;
 }
 
 // Public API: Business Listing
