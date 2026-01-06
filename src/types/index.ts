@@ -611,6 +611,7 @@ export interface BusinessDetail {
   review_count: number;
   is_favourite?: boolean;
   onine_consultancy?: OnlineConsultancy;
+  is_service_active?: boolean;
 }
 
 export interface BusinessDetailResponse {
