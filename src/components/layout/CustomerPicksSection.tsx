@@ -20,7 +20,7 @@ export default function CustomerPicksSection({ categoryId }: CustomerPicksSectio
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const perPage = 5;
   const { data: categories } = useCategories();
@@ -47,6 +47,7 @@ export default function CustomerPicksSection({ categoryId }: CustomerPicksSectio
       setCurrentPage(1);
       setBusinesses([]);
       setError(null);
+      setHasNextPage(false);
       prevCategoryIdRef.current = categoryId;
     }
 
@@ -59,21 +60,22 @@ export default function CustomerPicksSection({ categoryId }: CustomerPicksSectio
       try {
         const response = await getPriorityListing(categoryId, pageToFetch, perPage);
         if (response.status && response.payload) {
-          setBusinesses(response.payload);
-          // If we got less than perPage items, there's no more data
-          setHasMore(response.payload.length === perPage);
+          // Extract items from the paginated payload
+          setBusinesses(response.payload.items || []);
+          // Use nextPage from API to determine if there are more pages
+          setHasNextPage(response.payload.nextPage !== null);
           // Update currentPage state if we fetched a different page
           if (categoryChanged && currentPage !== 1) {
             setCurrentPage(1);
           }
         } else {
           setBusinesses([]);
-          setHasMore(false);
+          setHasNextPage(false);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load businesses');
         setBusinesses([]);
-        setHasMore(false);
+        setHasNextPage(false);
       } finally {
         setLoading(false);
       }
@@ -83,14 +85,14 @@ export default function CustomerPicksSection({ categoryId }: CustomerPicksSectio
   }, [categoryId, currentPage, perPage]);
 
   const handlePrevious = () => {
-    if (currentPage > 1) {
+    if (currentPage > 1 && !loading) {
       setCurrentPage(prev => prev - 1);
       scrollToStart();
     }
   };
 
   const handleNext = () => {
-    if (hasMore) {
+    if (hasNextPage && !loading) {
       setCurrentPage(prev => prev + 1);
       scrollToStart();
     }
@@ -202,7 +204,7 @@ export default function CustomerPicksSection({ categoryId }: CustomerPicksSectio
               </button>
               <button
                 onClick={handleNext}
-                disabled={!hasMore || loading}
+                disabled={!hasNextPage || loading}
                 className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

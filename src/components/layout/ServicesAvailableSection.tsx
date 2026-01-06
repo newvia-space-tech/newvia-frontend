@@ -234,35 +234,66 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
     businessList.forEach(async (salon) => {
       try {
         const servicesResponse = await getServiceListing(salon.id, priceSort, 1, 3);
-        if (servicesResponse.status && servicesResponse.payload?.items) {
-          const mappedServices: ServiceData[] = servicesResponse.payload.items.map((service: Service) => {
-            const hasDiscount = service.hide_price > service.price;
-            return {
-              id: service.id,
-              name: service.name,
-              duration: formatDuration(service.duration_minutes),
-              nextAvailable: formatNextAvailable(service.next_available),
-              originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
-              currentPrice: formatPrice(service.price),
-              discount: hasDiscount
-            };
-          });
+        if (servicesResponse.status) {
+          // Handle both cases: payload as array or payload as object with items
+          const items = Array.isArray(servicesResponse.payload) 
+            ? servicesResponse.payload 
+            : (servicesResponse.payload?.items || []);
+          
+          if (items.length > 0) {
+            const mappedServices: ServiceData[] = items.map((service: Service) => {
+              const hasDiscount = service.hide_price > service.price;
+              return {
+                id: service.id,
+                name: service.name,
+                duration: formatDuration(service.duration_minutes),
+                nextAvailable: formatNextAvailable(service.next_available),
+                originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
+                currentPrice: formatPrice(service.price),
+                discount: hasDiscount
+              };
+            });
 
-          // Update the specific salon's services
-          setBusinesses(prev => prev.map(s =>
-            s.id === salon.id
-              ? {
-                ...s,
-                services: mappedServices,
-                servicesPage: 1,
-                hasMoreServices: servicesResponse.payload.nextPage !== null
-              }
-              : s
-          ));
+            // Update the specific salon's services
+            setBusinesses(prev => prev.map(s =>
+              s.id === salon.id
+                ? {
+                  ...s,
+                  services: mappedServices,
+                  servicesPage: 1,
+                  hasMoreServices: Array.isArray(servicesResponse.payload) 
+                    ? false 
+                    : (servicesResponse.payload?.nextPage !== null)
+                }
+                : s
+            ));
+          } else {
+            // No services found - set empty array and mark as no more services
+            setBusinesses(prev => prev.map(s =>
+              s.id === salon.id
+                ? {
+                  ...s,
+                  services: [],
+                  servicesPage: 1,
+                  hasMoreServices: false
+                }
+                : s
+            ));
+          }
         }
       } catch (err) {
         // On error, keep empty services array
         console.error(`Failed to fetch services for business ${salon.id}:`, err);
+        setBusinesses(prev => prev.map(s =>
+          s.id === salon.id
+            ? {
+              ...s,
+              services: [],
+              servicesPage: 1,
+              hasMoreServices: false
+            }
+            : s
+        ));
       }
     });
   };
@@ -279,30 +310,49 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
       const nextPage = business.servicesPage + 1;
       const servicesResponse = await getServiceListing(businessId, priceSort, nextPage, 3);
 
-      if (servicesResponse.status && servicesResponse.payload?.items) {
-        const mappedServices: ServiceData[] = servicesResponse.payload.items.map((service: Service) => {
-          const hasDiscount = service.hide_price > service.price;
-          return {
-            id: service.id,
-            name: service.name,
-            duration: formatDuration(service.duration_minutes),
-            nextAvailable: formatNextAvailable(service.next_available),
-            originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
-            currentPrice: formatPrice(service.price),
-            discount: hasDiscount
-          };
-        });
+      if (servicesResponse.status) {
+        // Handle both cases: payload as array or payload as object with items
+        const items = Array.isArray(servicesResponse.payload) 
+          ? servicesResponse.payload 
+          : (servicesResponse.payload?.items || []);
 
-        setBusinesses(prev => prev.map(b =>
-          b.id === businessId
-            ? {
-              ...b,
-              services: [...b.services, ...mappedServices],
-              servicesPage: nextPage,
-              hasMoreServices: servicesResponse.payload.nextPage !== null
-            }
-            : b
-        ));
+        if (items.length > 0) {
+          const mappedServices: ServiceData[] = items.map((service: Service) => {
+            const hasDiscount = service.hide_price > service.price;
+            return {
+              id: service.id,
+              name: service.name,
+              duration: formatDuration(service.duration_minutes),
+              nextAvailable: formatNextAvailable(service.next_available),
+              originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
+              currentPrice: formatPrice(service.price),
+              discount: hasDiscount
+            };
+          });
+
+          setBusinesses(prev => prev.map(b =>
+            b.id === businessId
+              ? {
+                ...b,
+                services: [...b.services, ...mappedServices],
+                servicesPage: nextPage,
+                hasMoreServices: Array.isArray(servicesResponse.payload) 
+                  ? false 
+                  : (servicesResponse.payload?.nextPage !== null)
+              }
+              : b
+          ));
+        } else {
+          // No more services found
+          setBusinesses(prev => prev.map(b =>
+            b.id === businessId
+              ? {
+                ...b,
+                hasMoreServices: false
+              }
+              : b
+          ));
+        }
       }
     } catch (error) {
       console.error(`Error loading more services for business ${businessId}:`, error);
@@ -408,34 +458,65 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
       businesses.forEach(async (salon) => {
         try {
           const servicesResponse = await getServiceListing(salon.id, priceSort, 1, 3);
-          if (servicesResponse.status && servicesResponse.payload?.items) {
-            const mappedServices: ServiceData[] = servicesResponse.payload.items.map((service: Service) => {
-              const hasDiscount = service.hide_price > service.price;
-              return {
-                id: service.id,
-                name: service.name,
-                duration: formatDuration(service.duration_minutes),
-                nextAvailable: formatNextAvailable(service.next_available),
-                originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
-                currentPrice: formatPrice(service.price),
-                discount: hasDiscount
-              };
-            });
+          if (servicesResponse.status) {
+            // Handle both cases: payload as array or payload as object with items
+            const items = Array.isArray(servicesResponse.payload) 
+              ? servicesResponse.payload 
+              : (servicesResponse.payload?.items || []);
 
-            // Update the specific salon's services
-            setBusinesses(prev => prev.map(s =>
-              s.id === salon.id
-                ? {
-                  ...s,
-                  services: mappedServices,
-                  servicesPage: 1,
-                  hasMoreServices: servicesResponse.payload.nextPage !== null
-                }
-                : s
-            ));
+            if (items.length > 0) {
+              const mappedServices: ServiceData[] = items.map((service: Service) => {
+                const hasDiscount = service.hide_price > service.price;
+                return {
+                  id: service.id,
+                  name: service.name,
+                  duration: formatDuration(service.duration_minutes),
+                  nextAvailable: formatNextAvailable(service.next_available),
+                  originalPrice: hasDiscount ? formatPrice(service.hide_price) : undefined,
+                  currentPrice: formatPrice(service.price),
+                  discount: hasDiscount
+                };
+              });
+
+              // Update the specific salon's services
+              setBusinesses(prev => prev.map(s =>
+                s.id === salon.id
+                  ? {
+                    ...s,
+                    services: mappedServices,
+                    servicesPage: 1,
+                    hasMoreServices: Array.isArray(servicesResponse.payload) 
+                      ? false 
+                      : (servicesResponse.payload?.nextPage !== null)
+                  }
+                  : s
+              ));
+            } else {
+              // No services found - set empty array
+              setBusinesses(prev => prev.map(s =>
+                s.id === salon.id
+                  ? {
+                    ...s,
+                    services: [],
+                    servicesPage: 1,
+                    hasMoreServices: false
+                  }
+                  : s
+              ));
+            }
           }
         } catch (err) {
           console.error(`Failed to fetch services for business ${salon.id}:`, err);
+          setBusinesses(prev => prev.map(s =>
+            s.id === salon.id
+              ? {
+                ...s,
+                services: [],
+                servicesPage: 1,
+                hasMoreServices: false
+              }
+              : s
+          ));
         }
       });
     };
@@ -749,7 +830,12 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
                           maxWidth: 'calc(400px * 2 + 16px + 200px)' // Show 2 full cards + half of third card on desktop
                         }}
                       >
-                        {salon.services.map((service, serviceIndex) => (
+                        {salon.services.length === 0 ? (
+                          <div className="flex items-center justify-center py-8 px-4 text-gray-500 text-sm sm:text-base">
+                            No services available at this time.
+                          </div>
+                        ) : (
+                          salon.services.map((service, serviceIndex) => (
                           <div key={serviceIndex} className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow flex-shrink-0" style={{ minWidth: '280px', maxWidth: '450px' }}>
                             <div className="flex justify-between items-start gap-3 sm:gap-4">
                               <div className="flex-1 min-w-0">
@@ -792,7 +878,8 @@ export default function ServicesAvailableSection({ searchQuery, location, cityId
                               </div>
                             </div>
                           </div>
-                        ))}
+                        ))
+                        )}
 
                         {/* Load More Button */}
                         {salon.hasMoreServices && (
