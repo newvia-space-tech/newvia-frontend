@@ -1128,18 +1128,22 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                                 RM {serviceItem.price.toFixed(2)}
                               </span>
                             </div>
-                            <Link
-                              href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`}
-                              className="w-full sm:w-auto"
-                              onClick={(e) => handleBookNowClick(e, businessId, serviceItem.id)}
-                            >
-                              <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
-                                Book Now
-                              </button>
-                            </Link>
-                            <span className="text-[#9ea5ad] text-xs" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '16px' }}>
-                              Free cancellation
-                            </span>
+                            {businessData?.is_service_active !== false && (
+                              <>
+                                <Link
+                                  href={`/booking?business_id=${businessId}&service_id=${serviceItem.id}`}
+                                  className="w-full sm:w-auto"
+                                  onClick={(e) => handleBookNowClick(e, businessId, serviceItem.id)}
+                                >
+                                  <button className="bg-[#6290f2] text-white px-4 py-1.5 rounded-lg text-sm sm:text-base font-medium w-full sm:w-auto cursor-pointer" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '24px' }}>
+                                    Book Now
+                                  </button>
+                                </Link>
+                                <span className="text-[#9ea5ad] text-xs" style={{ fontFamily: 'Lato, sans-serif', fontWeight: 500, lineHeight: '16px' }}>
+                                  Free cancellation
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1450,7 +1454,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                                 </p>
                               </div>
                               <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
-                                {discount.business_id && discount.service_id ? (
+                                {businessData?.is_service_active !== false && discount.business_id && discount.service_id ? (
                                   <Link
                                     href={`/booking?business_id=${discount.business_id}&service_id=${discount.service_id}`}
                                     className="w-full sm:w-auto"
@@ -1544,7 +1548,7 @@ export default function ServiceDetailsPage({ params }: ServiceDetailsPageProps) 
                             </p>
                           </div>
                           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 mt-4">
-                            {businessData && businessId ? (
+                            {businessData?.is_service_active !== false && businessData && businessId ? (
                               <button
                                 onClick={handleConsultancyBookClick}
                                 className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors w-full sm:w-fit cursor-pointer"
