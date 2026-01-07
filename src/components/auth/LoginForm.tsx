@@ -179,7 +179,7 @@ export default function LoginForm({ role }: LoginFormProps) {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 sm:px-16 relative z-10">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 sm:px-16 pt-24 sm:pt-8 lg:pt-0 relative z-10">
         <div className="w-full max-w-md space-y-8">
           {/* Heading */}
           <div className="space-y-2">
