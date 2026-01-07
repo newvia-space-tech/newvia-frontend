@@ -509,6 +509,7 @@ export interface BusinessListing {
   total_reviews: number;
   thumbnail_image: string;
   tags: string | null;
+  is_service_active?: boolean;
 }
 
 export interface BusinessListingResponse {
