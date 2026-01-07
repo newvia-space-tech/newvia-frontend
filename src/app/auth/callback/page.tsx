@@ -85,7 +85,7 @@ export default function AuthCallbackPage() {
         // Close popup immediately after sending message
         setTimeout(() => {
           window.close();
-        }, 10000);
+        }, 100);
 
       } catch (error) {
         console.error('Auth callback error:', error);
