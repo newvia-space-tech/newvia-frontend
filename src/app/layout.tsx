@@ -49,7 +49,6 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
       { url: "/icon.svg", type: "image/svg+xml" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
@@ -92,7 +91,7 @@ export default function RootLayout({
   const organizationName = process.env.NEXT_PUBLIC_ORGANIZATION_NAME || "NewVia";
   const organizationUrl = process.env.NEXT_PUBLIC_ORGANIZATION_URL || baseUrl;
   // Logo must be an absolute URL for Google
-  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || `${baseUrl}/icon.svg`;
+  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || `${baseUrl}/public/icon.svg`;
 
   // Build structured data JSON-LD for Google Search
   const structuredData = {
