@@ -67,20 +67,20 @@ export default function AuthCallbackPage() {
         
         // Call backend with code and role (narrow type)
         const role = state as 'customer' | 'provider';
-        // const authResponse = await googleAuthCallback(code, role);
-        // console.log('✅ Auth response:', authResponse);
+        const authResponse = await googleAuthCallback(code, role);
+        console.log('✅ Auth response:', authResponse);
         
-        // // Send success message to parent window (don't store in popup localStorage)
-        // if (window.opener) {
-        //   const messageData: PostMessageData = {
-        //     type: 'GOOGLE_AUTH_SUCCESS',
-        //     token: authResponse.authToken,
-        //     user: authResponse.user,
-        //   };
-        //   window.opener.postMessage(messageData, window.location.origin);
-        // }
+        // Send success message to parent window (don't store in popup localStorage)
+        if (window.opener) {
+          const messageData: PostMessageData = {
+            type: 'GOOGLE_AUTH_SUCCESS',
+            token: authResponse.authToken,
+            user: authResponse.user,
+          };
+          window.opener.postMessage(messageData, window.location.origin);
+        }
         
-        // setStatus('success');
+        setStatus('success');
         
         // Close popup immediately after sending message
         setTimeout(() => {
