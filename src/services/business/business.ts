@@ -23,6 +23,7 @@ import {
   EditBusinessImagesRequest,
   EditBusinessImagesResponse,
   UploadImagesResponse,
+  AdminSubscriptionPlansResponse,
 } from '@/types';
 import type { ApiOnboardingPayload } from '@/types/onboarding';
 import { apiRequest } from '../common/apiRequest';
@@ -669,6 +670,29 @@ export const editBusinessImages = async (
 
   if (!responseData.status) {
     throw new Error(responseData.message || 'Failed to update business images');
+  }
+
+  return data;
+};
+
+// Protected: Get subscription plans (requires authentication)
+export const getSubscriptionPlans = async (
+  authToken: string
+): Promise<AdminSubscriptionPlansResponse> => {
+  const response = await apiRequest(
+    'admin/subscription_plan',
+    { method: 'GET' },
+    authToken
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to fetch subscription plans');
+  }
+
+  const data = await response.json();
+  if (!data.status) {
+    throw new Error(data.message || 'Failed to fetch subscription plans');
   }
 
   return data;
