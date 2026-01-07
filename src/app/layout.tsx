@@ -85,33 +85,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Base URL for absolute paths
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://joinnewvia.com";
+  
   // Get organization data from environment variables
   const organizationName = process.env.NEXT_PUBLIC_ORGANIZATION_NAME || "NewVia";
-  const organizationUrl = process.env.NEXT_PUBLIC_ORGANIZATION_URL || process.env.NEXT_PUBLIC_APP_URL || "";
-  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || "";
+  const organizationUrl = process.env.NEXT_PUBLIC_ORGANIZATION_URL || baseUrl;
+  // Logo must be an absolute URL for Google
+  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || `${baseUrl}/icon.svg`;
 
-  // Build structured data JSON-LD
+  // Build structured data JSON-LD for Google Search
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": organizationName,
-    ...(organizationUrl && { "url": organizationUrl }),
-    ...(organizationLogo && { "logo": organizationLogo }),
+    "url": organizationUrl,
+    "logo": organizationLogo,
+    "description": "NewVia connects you with wellness providers for massage, yoga, and holistic health services. Book your next wellness experience today.",
+    "sameAs": [
+      // Add your social media URLs here when available
+      // "https://www.facebook.com/newvia",
+      // "https://www.instagram.com/newvia",
+      // "https://www.linkedin.com/company/newvia",
+    ].filter(Boolean),
   };
 
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Script
-          id="organization-structured-data"
+      <head>
+        <script
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData),
           }}
         />
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <AuthProvider>
           <QueryProvider>
             {children}
