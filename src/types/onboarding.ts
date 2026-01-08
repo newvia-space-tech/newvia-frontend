@@ -102,5 +102,6 @@ export interface ApiOnboardingPayload {
   services: ApiService[];
   user_id: string;
   images: string[]; // Array of uploaded image URLs
+  timezone: string; // User's timezone (e.g., "Asia/Kolkata")
 }
 

@@ -49,7 +49,7 @@ export default function TrustedPartnersSection() {
                   </span>
                 </div>
                 <h2 className="text-2xl lg:text-3xl font-medium text-black">
-                  Trusted Wellness Partners
+                  Trusted Wellness Options
                 </h2>
               </div>
               

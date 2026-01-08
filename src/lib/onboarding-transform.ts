@@ -80,6 +80,9 @@ export function transformOnboardingDataToApi(
 ): ApiOnboardingPayload {
   const { step1, step2, step3 } = providerData;
 
+  // Get user's timezone
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
   return {
     business_name: step1.businessName,
     business_category_id: step1.categoryId,
@@ -96,6 +99,7 @@ export function transformOnboardingDataToApi(
     services: transformServices(step3.services),
     user_id: userId,
     images: imageUrls,
+    timezone,
   };
 }
 
