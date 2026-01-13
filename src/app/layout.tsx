@@ -91,7 +91,7 @@ export default function RootLayout({
   const organizationName = process.env.NEXT_PUBLIC_ORGANIZATION_NAME || "NewVia";
   const organizationUrl = process.env.NEXT_PUBLIC_ORGANIZATION_URL || baseUrl;
   // Logo must be an absolute URL for Google
-  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || `${baseUrl}/public/icon.svg`;
+  const organizationLogo = process.env.NEXT_PUBLIC_ORGANIZATION_LOGO || `${baseUrl}/public/icon.png`;
 
   // Build structured data JSON-LD for Google Search
   const structuredData = {
